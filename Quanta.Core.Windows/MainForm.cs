@@ -77,7 +77,7 @@ namespace Quanta.Core.Windows
             // Load and set the Quanta2.ico icon
             try
             {
-                var iconPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Quanta2.ico"); if (System.IO.File.Exists(iconPath)) { this.Icon = new Icon(iconPath); icon.Icon = new Icon(iconPath); }
+                //var iconPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Quanta2.ico"); if (System.IO.File.Exists(iconPath)) { this.Icon = new Icon(iconPath); icon.Icon = new Icon(iconPath); }
             }
             catch (Exception ex)
             {
@@ -592,8 +592,8 @@ namespace Quanta.Core.Windows
 
         private void viewTasks_Click(object sender, EventArgs e)
         {
-            var viewTasks = new ViewTasks();
-            viewTasks.Show(); viewTasks.Show();
+            //var viewTasks = new ViewTasks();
+            //viewTasks.Show(); viewTasks.Show();
         }
 
         private void toolStripSeparator1_Click(object sender, EventArgs e)
