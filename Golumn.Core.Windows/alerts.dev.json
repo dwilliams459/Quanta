@@ -1,0 +1,189 @@
+[
+  {
+    "Title": "Daily Standup",
+    "AlertDateTime": "2024-02-05T09:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": true,
+    "Tuesday": null,
+    "Wednesday": true,
+    "Thursday": null,
+    "Friday": true
+  },
+  {
+    "Title": "PO Meeting",
+    "AlertDateTime": "2024-04-01T10:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": true,
+    "Tuesday": true,
+    "Wednesday": true,
+    "Thursday": null,
+    "Friday": true
+  },
+  {
+    "Title": "PO Meeting",
+    "AlertDateTime": "2024-04-04T09:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": false,
+    "Wednesday": null,
+    "Thursday": true,
+    "Friday": null
+  },
+  {
+    "Title": "1 on 1",
+    "AlertDateTime": "2024-02-05T11:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": true,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Weekly Meeting",
+    "AlertDateTime": "2024-02-05T10:30:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": true,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Metro Meeting",
+    "AlertDateTime": "2024-06-06T12:30:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": true,
+    "Friday": null
+  },
+  {
+    "Title": "PO Meeting",
+    "AlertDateTime": "2024-06-04T10:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": true,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Daily Standup",
+    "AlertDateTime": "2024-06-27T10:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": false,
+    "Wednesday": null,
+    "Thursday": true,
+    "Friday": null
+  },
+  {
+    "Title": "Daily Standup",
+    "AlertDateTime": "2024-07-02T09:30:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": true,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Weekly Sync Call",
+    "AlertDateTime": "2024-07-10T14:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": true
+  },
+  {
+    "Title": "Data Science Service -Bi Weekly",
+    "AlertDateTime": "2024-07-15T15:30:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": true,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Weekly sync",
+    "AlertDateTime": "2024-07-22T12:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": true,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "WebApp series",
+    "AlertDateTime": "2024-08-22T15:30:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": true,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "CITPG Monthly Meeting",
+    "AlertDateTime": "2025-02-18T17:30:00",
+    "AlertEndTime": null,
+    "Repeat": false,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "AI security",
+    "AlertDateTime": "2025-01-29T13:00:00",
+    "AlertEndTime": null,
+    "Repeat": false,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Requirements Gathering Workshop",
+    "AlertDateTime": "2025-01-23T12:30:00",
+    "AlertEndTime": null,
+    "Repeat": false,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": null,
+    "Thursday": null,
+    "Friday": null
+  },
+  {
+    "Title": "Data ingestion Service",
+    "AlertDateTime": "2025-01-22T17:00:00",
+    "AlertEndTime": null,
+    "Repeat": true,
+    "Monday": null,
+    "Tuesday": null,
+    "Wednesday": true,
+    "Thursday": null,
+    "Friday": null
+  }
+]
