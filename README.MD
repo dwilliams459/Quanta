@@ -1,6 +1,6 @@
 # Quanta
 
-**Quanta - Because your thoughts move faster than your mouse.**
+**Because your thoughts move faster than your mouse.**
 
 A lightning-fast Windows productivity tool for quick notes and calendar alerts.
 
@@ -242,9 +242,9 @@ Edit `appsettings.json` to customize paths:
 - ✅ Check Windows Event Viewer for errors
 - ✅ Ensure `C:\quanta\` folder is writable
 
-### Hotkey not working (Not consistently working)
+### Hotkey not working 
 - ❌ Another app may be using the same key
-- ❌ Try a different key combination
+- ❌ Try a different key combination (interface may not work)
 - ❌ Check if Quanta is running (look in system tray)
 
 ### Alerts not firing
@@ -315,7 +315,7 @@ We deliberately **don't** include:
 - ❌ Cloud sync (adds complexity)
 - ❌ Mobile app (not the use case)
 - ❌ Categories/tags (use keywords and hashtags instead)
-- ❌ Statistics/reports (keeps it simple)
+- ❌ Statistics/reports (to keep it simple)
 
 If you need those features, traditional apps like OneNote or Outlook might be better fits.
 
@@ -327,9 +327,10 @@ If you need those features, traditional apps like OneNote or Outlook might be be
 
 Contributions welcome! Please:
 1. Keep the "speed & simplicity" philosophy
-2. Test on Windows 10 and 11
-3. Follow existing code patterns
-4. Update README for new features
+2. Improvements to UI are welcome! 
+3. Test on Windows 10 and 11
+4. Follow existing code patterns
+5. Update README for new features
 
 ## Roadmap
 
