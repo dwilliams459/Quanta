@@ -441,7 +441,7 @@ namespace Quanta.Core.Windows
         private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var viewLogForm = new ViewLog();
-            viewLogForm.Show(); viewLogForm.Show();
+            viewLogForm.Show(); 
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -495,7 +495,7 @@ namespace Quanta.Core.Windows
         private void viewAlertsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var viewAlertsForm = new ViewAlerts();
-            viewAlertsForm.Show(); viewAlertsForm.Show();
+            viewAlertsForm.Show(); 
         }
 
         private void iconContextMenu_Opening(object sender, CancelEventArgs e)
@@ -565,7 +565,7 @@ namespace Quanta.Core.Windows
         private void viewOnlyAlerts_Click(object sender, EventArgs e)
         {
             var viewOnlyAlertsForm = new ViewOnlyAlerts();
-            viewOnlyAlertsForm.Show(); viewOnlyAlertsForm.Show();
+            viewOnlyAlertsForm.Show(); 
         }
 
         private void worldClockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -577,7 +577,7 @@ namespace Quanta.Core.Windows
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
             var addAlert = new AddAlert();
-            addAlert.Show(); addAlert.Show();
+            addAlert.Show();
         }
 
         private void toolStripTextBox1_Click(object sender, EventArgs e)
@@ -587,7 +587,7 @@ namespace Quanta.Core.Windows
         private void sprintScheduleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var viewSchedule = new ViewSchedule();
-            viewSchedule.Show(); viewSchedule.Show();
+            viewSchedule.Show();
         }
 
         private void viewTasks_Click(object sender, EventArgs e)
