@@ -1,0 +1,5 @@
+[
+  { "Id": 1, "Name": "Set up project scaffolding", "SprintId": 1 },
+  { "Id": 2, "Name": "Create login screen", "SprintId": 1 },
+  { "Id": 3, "Name": "Implement user story grid view", "SprintId": 1 }
+]

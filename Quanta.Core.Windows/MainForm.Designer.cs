@@ -45,6 +45,7 @@ namespace Quanta.Core.Windows
             viewOnlyAlerts = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             sprintScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            viewUserStoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             icon = new System.Windows.Forms.NotifyIcon(components);
@@ -90,7 +91,7 @@ namespace Quanta.Core.Windows
             // 
             // iconContextMenu
             // 
-            iconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { hotkeyToolStripMenuItem, toolStripSeparator3, logToolStripMenuItem, viewLogToolStripMenuItem, toolStripSeparator2, toolStripMenuItem3, viewAlertsToolStripMenuItem, viewOnlyAlerts, toolStripSeparator1, sprintScheduleToolStripMenuItem, toolStripSeparator4, exitToolStripMenuItem });
+            iconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { hotkeyToolStripMenuItem, toolStripSeparator3, logToolStripMenuItem, viewLogToolStripMenuItem, toolStripSeparator2, toolStripMenuItem3, viewAlertsToolStripMenuItem, viewOnlyAlerts, toolStripSeparator1, sprintScheduleToolStripMenuItem, viewUserStoriesToolStripMenuItem, toolStripSeparator4, exitToolStripMenuItem });
             iconContextMenu.Name = "iconContextMenu";
             iconContextMenu.Size = new System.Drawing.Size(157, 204);
             iconContextMenu.Opening += iconContextMenu_Opening;
@@ -160,6 +161,13 @@ namespace Quanta.Core.Windows
             sprintScheduleToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             sprintScheduleToolStripMenuItem.Text = "Sprint Schedule";
             sprintScheduleToolStripMenuItem.Click += sprintScheduleToolStripMenuItem_Click;
+            // 
+            // viewUserStoriesToolStripMenuItem
+            // 
+            viewUserStoriesToolStripMenuItem.Name = "viewUserStoriesToolStripMenuItem";
+            viewUserStoriesToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            viewUserStoriesToolStripMenuItem.Text = "User Stories";
+            viewUserStoriesToolStripMenuItem.Click += viewUserStoriesToolStripMenuItem_Click;
             // 
             // toolStripSeparator4
             // 
@@ -275,6 +283,7 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem sprintScheduleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewUserStoriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewTasks;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }

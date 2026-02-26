@@ -70,6 +70,7 @@
             dataGridView1.Size = new System.Drawing.Size(414, 169);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+            dataGridView1.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
             // 
             // dataGridViewTextBoxColumn2
             // 

@@ -125,5 +125,10 @@ namespace Quanta.Core.Windows
         {
             ReadSchedules();
         }
+
+        private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+
+        }
     }
 }

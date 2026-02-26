@@ -23,8 +23,12 @@ namespace Quanta.Core.Windows
         private readonly string registryKeyName = "Hotkey";
 
         private readonly string addAlertKeyName = "AlertHotKey";
+        private readonly string volumeHotKeyName = "VolumeHotKey";
+        private readonly string volumePrintScreenHotKeyName = "VolumePrintScreenHotKey";
         private Keys hotkey = Keys.None;
         private Keys alertHotKey = Keys.None;
+        private Keys volumeHotKey = Keys.None;
+        private Keys volumePrintScreenHotKey = Keys.None;
         private DateTime delayTimerUntil = DateTime.Now;
 
         private bool myVisible;
@@ -121,6 +125,7 @@ namespace Quanta.Core.Windows
                     }
                 }
 
+                // Get/Set Alert hotkey (add schedule alert)
                 var addAlertHotkeyValue = registryKey.GetValue(addAlertKeyName);
                 if (addAlertHotkeyValue == null || string.IsNullOrEmpty(addAlertHotkeyValue.ToString()))
                 {
@@ -133,6 +138,51 @@ namespace Quanta.Core.Windows
                         alertHotKey = parsedAlertHotkey;
                     }
                 }
+
+                // Get/Set Volume mute hotkey
+                var volumeHotkeyValue = registryKey.GetValue(volumeHotKeyName);
+                var ctrlScrollLock = Keys.Control | Keys.Scroll;
+                if (volumeHotkeyValue == null || string.IsNullOrEmpty(volumeHotkeyValue.ToString()))
+                {
+                    volumeHotKey = ctrlScrollLock; // Default hotkey
+                }
+                else
+                {
+                    if (Enum.TryParse(volumeHotkeyValue.ToString(), out Keys parsedVolumeHotkey))
+                    {
+                        volumeHotkeyValue = parsedVolumeHotkey;
+                    }
+                }
+
+                // Get/Set Volume mute hotkey
+                var volumeHotkeyPrintScreenValue = registryKey.GetValue(volumePrintScreenHotKeyName);
+                var shiftPrintScreen = Keys.Shift | Keys.PrintScreen;
+                if (volumeHotkeyPrintScreenValue == null || string.IsNullOrEmpty(volumeHotkeyPrintScreenValue.ToString()))
+                {
+                    volumePrintScreenHotKey = shiftPrintScreen; // Default hotkey
+                }
+                else
+                {
+                    if (Enum.TryParse(volumeHotkeyPrintScreenValue.ToString(), out Keys parsedVolumeHotkey))
+                    {
+                        volumeHotkeyPrintScreenValue = parsedVolumeHotkey;
+                    }
+                }
+
+
+                //var ctrlScrollLock = Keys.Control | Keys.Scroll;
+                //try
+                //{
+                //    HotkeyManager.Current.AddOrReplace("TestCtrlScrollLock", ctrlScrollLock, (s, e) => { });
+                //    HotkeyManager.Current.Remove("TestCtrlScrollLock");
+                //    volumeHotKey = ctrlScrollLock;
+                //}
+                //catch
+                //{
+                //    // If not available, fallback to Shift+PrintScreen
+                //    alertHotKey = Keys.Shift | Keys.PrintScreen;
+                //}
+
 
                 // Register hotkeys
                 RegisterHotkeys();
@@ -168,11 +218,26 @@ namespace Quanta.Core.Windows
                 {
                     HotkeyManager.Current.AddOrReplace("ShowAddAlert", alertHotKey, (sender, e) => ShowAddAlert());
                 }
+
+                if (volumeHotKey != Keys.None)
+                {
+                    HotkeyManager.Current.AddOrReplace("VolumeMute", volumeHotKey, (sender, e) => MuteUnmuteVolume());
+                }
+
+                if (volumePrintScreenHotKey != Keys.None)
+                {
+                    HotkeyManager.Current.AddOrReplace("VolumePrintScreen", volumePrintScreenHotKey, (sender, e) => MuteUnmuteVolume());
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error registering hotkeys: " + ex.Message);
             }
+        }
+
+        private void MuteUnmuteVolume()
+        {
+            MessageBox.Show("Mute/Unmute Volume Hotkey Pressed");
         }
 
         private void UpdateHotkeyDisplay()
@@ -441,7 +506,7 @@ namespace Quanta.Core.Windows
         private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var viewLogForm = new ViewLog();
-            viewLogForm.Show(); 
+            viewLogForm.Show();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -495,7 +560,7 @@ namespace Quanta.Core.Windows
         private void viewAlertsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var viewAlertsForm = new ViewAlerts();
-            viewAlertsForm.Show(); 
+            viewAlertsForm.Show();
         }
 
         private void iconContextMenu_Opening(object sender, CancelEventArgs e)
@@ -565,7 +630,7 @@ namespace Quanta.Core.Windows
         private void viewOnlyAlerts_Click(object sender, EventArgs e)
         {
             var viewOnlyAlertsForm = new ViewOnlyAlerts();
-            viewOnlyAlertsForm.Show(); 
+            viewOnlyAlertsForm.Show();
         }
 
         private void worldClockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -588,6 +653,12 @@ namespace Quanta.Core.Windows
         {
             var viewSchedule = new ViewSchedule();
             viewSchedule.Show();
+        }
+
+        private void viewUserStoriesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var viewUserStories = new ViewUserStories();
+            viewUserStories.Show();
         }
 
         private void viewTasks_Click(object sender, EventArgs e)
