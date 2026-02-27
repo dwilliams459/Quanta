@@ -6,6 +6,6 @@ namespace Quanta.Core.Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int? SprintId { get; set; }
+        public string SprintId { get; set; }
     }
 }

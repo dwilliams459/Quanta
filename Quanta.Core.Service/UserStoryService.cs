@@ -16,7 +16,7 @@ namespace Quanta.Core.Service
                 {
                     var defaults = new List<UserStory>
                     {
-                        new UserStory { Id = 1, Name = "Sample User Story", SprintId = null }
+                        new UserStory { Id = 1, Name = "Sample User Story", SprintId = "" }
                     };
                     File.WriteAllText(filePath, JsonConvert.SerializeObject(defaults, Formatting.Indented));
                 }

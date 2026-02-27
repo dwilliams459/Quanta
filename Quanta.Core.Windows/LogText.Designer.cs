@@ -91,6 +91,7 @@ namespace Quanta.Core.Windows
             // 
             // txtLength
             // 
+            txtLength.AcceptsReturn = true;
             txtLength.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             txtLength.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtLength.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -105,6 +106,7 @@ namespace Quanta.Core.Windows
             // 
             // txtUsId
             // 
+            txtUsId.AcceptsReturn = true;
             txtUsId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             txtUsId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtUsId.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -114,7 +116,6 @@ namespace Quanta.Core.Windows
             txtUsId.PlaceholderText = "User Story";
             txtUsId.Size = new System.Drawing.Size(180, 23);
             txtUsId.TabIndex = 2;
-            txtUsId.TextChanged += txtUsId_TextChanged;
             txtUsId.KeyPress += txtUsId_KeyPress;
             // 
             // LogText
