@@ -53,7 +53,7 @@ namespace Quanta.Core.Windows
             string timeInfo = _alertService.GetLocalAndISTTime();
 
             // Update the form's title
-            this.Text = $"Today's Alerts ({timeInfo})";
+            this.Text = $"Schedule ({timeInfo})";
         }
 
         private void ViewSchedule_Load(object sender, EventArgs e)
