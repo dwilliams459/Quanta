@@ -21,6 +21,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewUserStories));
             dataGridView1 = new System.Windows.Forms.DataGridView();
             colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -28,6 +29,7 @@
             userStoryBindingSource = new System.Windows.Forms.BindingSource(components);
             lblError = new System.Windows.Forms.Label();
             btnRefresh = new System.Windows.Forms.Button();
+            button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)userStoryBindingSource).BeginInit();
             SuspendLayout();
@@ -127,7 +129,7 @@
             // 
             // btnRefresh
             // 
-            btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             btnRefresh.Location = new System.Drawing.Point(394, 81);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new System.Drawing.Size(23, 24);
@@ -136,15 +138,27 @@
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // button1
+            // 
+            button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            button1.Location = new System.Drawing.Point(369, 81);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(23, 24);
+            button1.TabIndex = 11;
+            button1.Text = "...";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // ViewUserStories
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(419, 107);
+            Controls.Add(button1);
             Controls.Add(btnRefresh);
             Controls.Add(dataGridView1);
             Controls.Add(lblError);
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MinimumSize = new System.Drawing.Size(100, 50);
             Name = "ViewUserStories";
             Text = "User Stories";
@@ -163,5 +177,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSprintId;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -3,6 +3,7 @@ using Quanta.Core.Domain;
 using Quanta.Core.Service;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -65,7 +66,7 @@ namespace Quanta.Core.Windows
 
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-                        // Get the clicked column
+            // Get the clicked column
             DataGridViewColumn column = dataGridView1.Columns[e.ColumnIndex];
 
             // Toggle the sort direction
@@ -85,6 +86,41 @@ namespace Quanta.Core.Windows
             // Rebind the sorted data to the DataGridView
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = userStories;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get the file path from configuration
+                var filePath = _config.GetValue<string>("userstoriesfilename");
+                
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    lblError.Text = "File path not configured.";
+                    return;
+                }
+
+                // Open the file in VS Code
+                OpenFileInVSCode(filePath);
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = $"Error opening file: {ex.Message}";
+            }
+        }
+
+        private void OpenFileInVSCode(string filePath)
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = $"\"C:\\Users\\david.williams1\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\" ",
+                Arguments = $"\"{_config.GetValue<string>("userstoriesfilename")}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            Process.Start(processStartInfo);
         }
     }
 }

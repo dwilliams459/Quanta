@@ -40,6 +40,7 @@
             IsActive = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             sprintScheduleBindingSource = new System.Windows.Forms.BindingSource(components);
             btnRefresh = new System.Windows.Forms.Button();
+            button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)sprintScheduleBindingSource).BeginInit();
             SuspendLayout();
@@ -135,11 +136,23 @@
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // button1
+            // 
+            button1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            button1.Location = new System.Drawing.Point(391, 24);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(23, 23);
+            button1.TabIndex = 11;
+            button1.Text = "...";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // ViewSchedule
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(413, 168);
+            Controls.Add(button1);
             Controls.Add(btnRefresh);
             Controls.Add(dataGridView1);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
@@ -173,5 +186,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DaysRemaining;
         private System.Windows.Forms.DataGridViewCheckBoxColumn IsActive;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button button1;
     }
 }

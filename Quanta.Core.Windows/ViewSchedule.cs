@@ -5,6 +5,7 @@ using Quanta.Core.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -95,9 +96,9 @@ namespace Quanta.Core.Windows
                 var source = new BindingSource(bindingList, null);
                 dataGridView1.DataSource = schedules; ;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                // Write to log or error message label;
             }
         }
 
@@ -129,6 +130,41 @@ namespace Quanta.Core.Windows
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get the file path from configuration
+                var filePath = _config.GetValue<string>("sprintsfilename");
+                
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    MessageBox.Show("Sprints file path not configured.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Open the file in VS Code
+                OpenFileInVSCode(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OpenFileInVSCode(string filePath)
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = $"\"C:\\Users\\david.williams1\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\" ",
+                Arguments = $"\"{filePath}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            Process.Start(processStartInfo);
         }
     }
 }
