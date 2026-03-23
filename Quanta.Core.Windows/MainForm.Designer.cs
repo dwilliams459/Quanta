@@ -54,6 +54,9 @@ namespace Quanta.Core.Windows
             button2 = new System.Windows.Forms.Button();
             lblPingStatus = new System.Windows.Forms.Label();
             lblPingResults = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            alertHotkeyTextBox = new System.Windows.Forms.TextBox();
+            buttonResetAlert = new System.Windows.Forms.Button();
             iconContextMenu.SuspendLayout();
             SuspendLayout();
             // 
@@ -93,7 +96,7 @@ namespace Quanta.Core.Windows
             // 
             iconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { hotkeyToolStripMenuItem, toolStripSeparator3, logToolStripMenuItem, viewLogToolStripMenuItem, toolStripSeparator2, toolStripMenuItem3, viewAlertsToolStripMenuItem, viewOnlyAlerts, toolStripSeparator1, sprintScheduleToolStripMenuItem, viewUserStoriesToolStripMenuItem, toolStripSeparator4, exitToolStripMenuItem });
             iconContextMenu.Name = "iconContextMenu";
-            iconContextMenu.Size = new System.Drawing.Size(157, 204);
+            iconContextMenu.Size = new System.Drawing.Size(157, 226);
             iconContextMenu.Opening += iconContextMenu_Opening;
             // 
             // hotkeyToolStripMenuItem
@@ -210,7 +213,7 @@ namespace Quanta.Core.Windows
             // button2
             // 
             button2.Font = new System.Drawing.Font("Segoe UI", 11F);
-            button2.Location = new System.Drawing.Point(12, 66);
+            button2.Location = new System.Drawing.Point(12, 132);
             button2.Name = "button2";
             button2.Size = new System.Drawing.Size(75, 27);
             button2.TabIndex = 5;
@@ -222,7 +225,7 @@ namespace Quanta.Core.Windows
             // 
             lblPingStatus.AutoSize = true;
             lblPingStatus.Font = new System.Drawing.Font("Segoe UI", 12F);
-            lblPingStatus.Location = new System.Drawing.Point(12, 96);
+            lblPingStatus.Location = new System.Drawing.Point(12, 162);
             lblPingStatus.Name = "lblPingStatus";
             lblPingStatus.Size = new System.Drawing.Size(0, 21);
             lblPingStatus.TabIndex = 6;
@@ -231,17 +234,53 @@ namespace Quanta.Core.Windows
             // 
             lblPingResults.AutoSize = true;
             lblPingResults.Font = new System.Drawing.Font("Segoe UI", 12F);
-            lblPingResults.Location = new System.Drawing.Point(12, 96);
+            lblPingResults.Location = new System.Drawing.Point(12, 162);
             lblPingResults.Name = "lblPingResults";
             lblPingResults.Size = new System.Drawing.Size(48, 21);
             lblPingResults.TabIndex = 7;
             lblPingResults.Text = "Ping: ";
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new System.Drawing.Font("Segoe UI", 12F);
+            label2.Location = new System.Drawing.Point(12, 63);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(148, 21);
+            label2.TabIndex = 8;
+            label2.Text = "Hotkey for add alert";
+            // 
+            // alertHotkeyTextBox
+            // 
+            alertHotkeyTextBox.Font = new System.Drawing.Font("Segoe UI", 11F);
+            alertHotkeyTextBox.Location = new System.Drawing.Point(12, 87);
+            alertHotkeyTextBox.Name = "alertHotkeyTextBox";
+            alertHotkeyTextBox.ReadOnly = true;
+            alertHotkeyTextBox.Size = new System.Drawing.Size(133, 27);
+            alertHotkeyTextBox.TabIndex = 9;
+            alertHotkeyTextBox.Text = "None";
+            alertHotkeyTextBox.KeyDown += alertHotkeyTextBox_KeyDown;
+            alertHotkeyTextBox.KeyPress += alertHotkeyTextBox_KeyPress;
+            // 
+            // buttonResetAlert
+            // 
+            buttonResetAlert.Font = new System.Drawing.Font("Segoe UI", 11F);
+            buttonResetAlert.Location = new System.Drawing.Point(176, 99);
+            buttonResetAlert.Name = "buttonResetAlert";
+            buttonResetAlert.Size = new System.Drawing.Size(75, 27);
+            buttonResetAlert.TabIndex = 10;
+            buttonResetAlert.Text = "Reset";
+            buttonResetAlert.UseVisualStyleBackColor = true;
+            buttonResetAlert.Click += buttonResetAlert_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(264, 125);
+            ClientSize = new System.Drawing.Size(264, 195);
+            Controls.Add(buttonResetAlert);
+            Controls.Add(alertHotkeyTextBox);
+            Controls.Add(label2);
             Controls.Add(lblPingResults);
             Controls.Add(lblPingStatus);
             Controls.Add(button2);
@@ -286,5 +325,8 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.ToolStripMenuItem viewUserStoriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewTasks;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox alertHotkeyTextBox;
+        private System.Windows.Forms.Button buttonResetAlert;
     }
 }

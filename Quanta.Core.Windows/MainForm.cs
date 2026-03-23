@@ -115,7 +115,7 @@ namespace Quanta.Core.Windows
                 var hotkeyValue = registryKey.GetValue(registryKeyName);
                 if (hotkeyValue == null || string.IsNullOrEmpty(hotkeyValue.ToString()))
                 {
-                    hotkey = Keys.Scroll; // Default hotkey
+                    hotkey = Keys.Control | Keys.Scroll; // Default hotkey: Control+Scroll Lock
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace Quanta.Core.Windows
                 var addAlertHotkeyValue = registryKey.GetValue(addAlertKeyName);
                 if (addAlertHotkeyValue == null || string.IsNullOrEmpty(addAlertHotkeyValue.ToString()))
                 {
-                    alertHotKey = Keys.Shift | Keys.Scroll; // Default hotkey
+                    alertHotKey = Keys.Pause; // Default hotkey: Pause/Break
                 }
                 else
                 {
@@ -243,6 +243,7 @@ namespace Quanta.Core.Windows
         private void UpdateHotkeyDisplay()
         {
             hotkeyTextBox.Text = hotkey == Keys.None ? "None" : hotkey.ToString();
+            alertHotkeyTextBox.Text = alertHotKey == Keys.None ? "None" : alertHotKey.ToString();
         }
 
         private void SaveHotkeySettings()
@@ -492,6 +493,29 @@ namespace Quanta.Core.Windows
         {
             hotkey = Keys.None;
             hotkeyTextBox.Text = "None";
+        }
+
+        private void buttonResetAlert_Click(object sender, EventArgs e)
+        {
+            alertHotKey = Keys.None;
+            alertHotkeyTextBox.Text = "None";
+        }
+
+        private void alertHotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Capture the key combination
+            if (e.KeyCode != Keys.None)
+            {
+                alertHotKey = e.KeyData;
+                alertHotkeyTextBox.Text = alertHotKey.ToString();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void alertHotkeyTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true; // Prevent normal text input
         }
 
         private void button1_Click(object sender, EventArgs e)
