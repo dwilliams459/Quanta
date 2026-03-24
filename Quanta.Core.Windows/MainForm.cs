@@ -518,6 +518,16 @@ namespace Quanta.Core.Windows
             e.Handled = true; // Prevent normal text input
         }
 
+        private void chkAutoDisplayLog_CheckedChanged(object sender, EventArgs e)
+        {
+            // TODO: Enable/disable auto-display timer
+        }
+
+        private void txtAutoDisplayMinute_TextChanged(object sender, EventArgs e)
+        {
+            // TODO: Validate and save the minute value
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -697,6 +707,11 @@ namespace Quanta.Core.Windows
 
         private void icon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
