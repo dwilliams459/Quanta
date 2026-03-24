@@ -25,11 +25,15 @@ namespace Quanta.Core.Windows
         private readonly string addAlertKeyName = "AlertHotKey";
         private readonly string volumeHotKeyName = "VolumeHotKey";
         private readonly string volumePrintScreenHotKeyName = "VolumePrintScreenHotKey";
+        private readonly string autoDisplayLogEnabledKey = "AutoDisplayLogEnabled";
+        private readonly string autoDisplayLogMinuteKey = "AutoDisplayLogMinute";
         private Keys hotkey = Keys.None;
         private Keys alertHotKey = Keys.None;
         private Keys volumeHotKey = Keys.None;
         private Keys volumePrintScreenHotKey = Keys.None;
         private DateTime delayTimerUntil = DateTime.Now;
+        private DateTime lastAutoDisplayCheck = DateTime.MinValue;
+        private Timer autoDisplayTimer;
 
         private bool myVisible;
 
@@ -105,6 +109,8 @@ namespace Quanta.Core.Windows
             }
 
             SetupHotkeys();
+            LoadAutoDisplaySettings();
+            SetupAutoDisplayTimer();
         }
 
         private void SetupHotkeys()
@@ -267,6 +273,9 @@ namespace Quanta.Core.Windows
                 {
                     registryKey.SetValue(addAlertKeyName, alertHotKey.ToString());
                 }
+
+                // Save auto-display settings
+                SaveAutoDisplaySettings();
 
                 // Re-register hotkeys
                 RegisterHotkeys();
@@ -518,14 +527,153 @@ namespace Quanta.Core.Windows
             e.Handled = true; // Prevent normal text input
         }
 
+        private void LoadAutoDisplaySettings()
+        {
+            try
+            {
+                // Load enabled state
+                var enabledValue = registryKey.GetValue(autoDisplayLogEnabledKey);
+                if (enabledValue != null && bool.TryParse(enabledValue.ToString(), out bool enabled))
+                {
+                    chkAutoDisplayLog.Checked = enabled;
+                }
+
+                // Load minute value
+                var minuteValue = registryKey.GetValue(autoDisplayLogMinuteKey);
+                if (minuteValue != null && !string.IsNullOrEmpty(minuteValue.ToString()))
+                {
+                    txtAutoDisplayMinute.Text = minuteValue.ToString();
+                }
+                else
+                {
+                    txtAutoDisplayMinute.Text = "55";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error loading auto-display settings: " + ex.Message);
+            }
+        }
+
+        private void SaveAutoDisplaySettings()
+        {
+            try
+            {
+                registryKey.SetValue(autoDisplayLogEnabledKey, chkAutoDisplayLog.Checked.ToString());
+                registryKey.SetValue(autoDisplayLogMinuteKey, txtAutoDisplayMinute.Text);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error saving auto-display settings: " + ex.Message);
+            }
+        }
+
+        private void SetupAutoDisplayTimer()
+        {
+            // Create a timer that checks every minute
+            autoDisplayTimer = new Timer(this.components)
+            {
+                Interval = 60000 // 1 minute
+            };
+            autoDisplayTimer.Tick += AutoDisplayTimer_Tick;
+            autoDisplayTimer.Start();
+        }
+
+        private void AutoDisplayTimer_Tick(object sender, EventArgs e)
+        {
+            if (!chkAutoDisplayLog.Checked)
+            {
+                return;
+            }
+
+            try
+            {
+                var now = DateTime.Now;
+
+                // Only check once per minute to avoid multiple triggers
+                if (lastAutoDisplayCheck.Year == now.Year && 
+                    lastAutoDisplayCheck.Month == now.Month && 
+                    lastAutoDisplayCheck.Day == now.Day && 
+                    lastAutoDisplayCheck.Hour == now.Hour && 
+                    lastAutoDisplayCheck.Minute == now.Minute)
+                {
+                    return;
+                }
+
+                // Validate and parse the minute value
+                if (string.IsNullOrWhiteSpace(txtAutoDisplayMinute.Text))
+                {
+                    return;
+                }
+
+                if (int.TryParse(txtAutoDisplayMinute.Text.Trim(), out int targetMinute))
+                {
+                    if (targetMinute >= 0 && targetMinute <= 59)
+                    {
+                        if (now.Minute == targetMinute)
+                        {
+                            lastAutoDisplayCheck = now;
+                            ShowLogText();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in auto-display timer: " + ex.Message);
+            }
+        }
+
+        private bool ValidateMinuteInput(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return false;
+            }
+
+            // Trim whitespace
+            input = input.Trim();
+
+            // Check if it's a valid integer
+            if (!int.TryParse(input, out int minute))
+            {
+                return false;
+            }
+
+            // Check if it's in valid range (0-59)
+            return minute >= 0 && minute <= 59;
+        }
+
         private void chkAutoDisplayLog_CheckedChanged(object sender, EventArgs e)
         {
-            // TODO: Enable/disable auto-display timer
+            // Enable/disable the minute textbox based on checkbox state
+            txtAutoDisplayMinute.Enabled = chkAutoDisplayLog.Checked;
+
+            // Save settings when checkbox state changes
+            SaveAutoDisplaySettings();
+
+            // Reset the last check time when toggling
+            lastAutoDisplayCheck = DateTime.MinValue;
         }
 
         private void txtAutoDisplayMinute_TextChanged(object sender, EventArgs e)
         {
-            // TODO: Validate and save the minute value
+            // Validate the input
+            if (string.IsNullOrWhiteSpace(txtAutoDisplayMinute.Text))
+            {
+                txtAutoDisplayMinute.BackColor = Color.White;
+                return;
+            }
+
+            if (ValidateMinuteInput(txtAutoDisplayMinute.Text))
+            {
+                txtAutoDisplayMinute.BackColor = Color.White;
+                SaveAutoDisplaySettings();
+            }
+            else
+            {
+                txtAutoDisplayMinute.BackColor = Color.LightPink;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
