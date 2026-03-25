@@ -63,10 +63,10 @@ namespace Quanta.Core.Windows
             // button2
             // 
             button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            button2.Location = new System.Drawing.Point(853, 428);
+            button2.Location = new System.Drawing.Point(659, 430);
             button2.Name = "button2";
             button2.Size = new System.Drawing.Size(75, 23);
-            button2.TabIndex = 3;
+            button2.TabIndex = 8;
             button2.Text = "Save";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -74,10 +74,10 @@ namespace Quanta.Core.Windows
             // button1
             // 
             button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            button1.Location = new System.Drawing.Point(934, 428);
+            button1.Location = new System.Drawing.Point(740, 430);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(75, 23);
-            button1.TabIndex = 4;
+            button1.TabIndex = 9;
             button1.Text = "Close";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
@@ -101,8 +101,8 @@ namespace Quanta.Core.Windows
             dataGridView1.DataSource = alertBindingSource;
             dataGridView1.Location = new System.Drawing.Point(12, 11);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new System.Drawing.Size(997, 405);
-            dataGridView1.TabIndex = 9;
+            dataGridView1.Size = new System.Drawing.Size(803, 372);
+            dataGridView1.TabIndex = 11;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.CellFormatting += dataGridView1_CellFormatting;
             dataGridView1.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
@@ -180,8 +180,8 @@ namespace Quanta.Core.Windows
             // 
             // button3
             // 
-            button3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            button3.Location = new System.Drawing.Point(12, 428);
+            button3.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            button3.Location = new System.Drawing.Point(11, 397);
             button3.Name = "button3";
             button3.Size = new System.Drawing.Size(75, 23);
             button3.TabIndex = 0;
@@ -195,7 +195,7 @@ namespace Quanta.Core.Windows
             button4.Location = new System.Drawing.Point(591, 15);
             button4.Name = "button4";
             button4.Size = new System.Drawing.Size(75, 23);
-            button4.TabIndex = 5;
+            button4.TabIndex = 6;
             button4.Text = "Add Event";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
@@ -207,18 +207,18 @@ namespace Quanta.Core.Windows
             newEventDatePicker.Location = new System.Drawing.Point(6, 15);
             newEventDatePicker.Name = "newEventDatePicker";
             newEventDatePicker.Size = new System.Drawing.Size(110, 23);
-            newEventDatePicker.TabIndex = 0;
+            newEventDatePicker.TabIndex = 1;
             // 
             // groupBox1
             // 
-            groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             groupBox1.Controls.Add(newEventTimeMin);
             groupBox1.Controls.Add(newEventTimeHour);
             groupBox1.Controls.Add(ddlNewEventAmPm);
             groupBox1.Controls.Add(txtNewEventDescription);
             groupBox1.Controls.Add(newEventDatePicker);
             groupBox1.Controls.Add(button4);
-            groupBox1.Location = new System.Drawing.Point(94, 414);
+            groupBox1.Location = new System.Drawing.Point(93, 383);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new System.Drawing.Size(672, 44);
             groupBox1.TabIndex = 1;
@@ -232,7 +232,7 @@ namespace Quanta.Core.Windows
             newEventTimeMin.Location = new System.Drawing.Point(181, 15);
             newEventTimeMin.Name = "newEventTimeMin";
             newEventTimeMin.Size = new System.Drawing.Size(44, 23);
-            newEventTimeMin.TabIndex = 2;
+            newEventTimeMin.TabIndex = 3;
             // 
             // newEventTimeHour
             // 
@@ -242,7 +242,7 @@ namespace Quanta.Core.Windows
             newEventTimeHour.Location = new System.Drawing.Point(122, 15);
             newEventTimeHour.Name = "newEventTimeHour";
             newEventTimeHour.Size = new System.Drawing.Size(53, 23);
-            newEventTimeHour.TabIndex = 1;
+            newEventTimeHour.TabIndex = 2;
             // 
             // ddlNewEventAmPm
             // 
@@ -253,7 +253,7 @@ namespace Quanta.Core.Windows
             ddlNewEventAmPm.Location = new System.Drawing.Point(231, 15);
             ddlNewEventAmPm.Name = "ddlNewEventAmPm";
             ddlNewEventAmPm.Size = new System.Drawing.Size(43, 23);
-            ddlNewEventAmPm.TabIndex = 3;
+            ddlNewEventAmPm.TabIndex = 4;
             // 
             // txtNewEventDescription
             // 
@@ -261,27 +261,29 @@ namespace Quanta.Core.Windows
             txtNewEventDescription.Location = new System.Drawing.Point(294, 15);
             txtNewEventDescription.Name = "txtNewEventDescription";
             txtNewEventDescription.Size = new System.Drawing.Size(291, 23);
-            txtNewEventDescription.TabIndex = 4;
+            txtNewEventDescription.TabIndex = 5;
             // 
             // buttonSync
             // 
             buttonSync.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            buttonSync.Location = new System.Drawing.Point(772, 428);
+            buttonSync.Location = new System.Drawing.Point(578, 430);
             buttonSync.Name = "buttonSync";
             buttonSync.Size = new System.Drawing.Size(75, 23);
-            buttonSync.TabIndex = 2;
+            buttonSync.TabIndex = 7;
             buttonSync.Text = "Sync";
             buttonSync.UseVisualStyleBackColor = true;
             buttonSync.Click += buttonSync_Click;
             // 
             // labelSyncStatus
             // 
-            labelSyncStatus.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            labelSyncStatus.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             labelSyncStatus.AutoEllipsis = true;
-            labelSyncStatus.Location = new System.Drawing.Point(772, 413);
+            labelSyncStatus.Enabled = false;
+            labelSyncStatus.ForeColor = System.Drawing.SystemColors.InfoText;
+            labelSyncStatus.Location = new System.Drawing.Point(337, 432);
             labelSyncStatus.Name = "labelSyncStatus";
             labelSyncStatus.Size = new System.Drawing.Size(237, 19);
-            labelSyncStatus.TabIndex = 8;
+            labelSyncStatus.TabIndex = 20;
             labelSyncStatus.Text = "Never synced";
             labelSyncStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -289,7 +291,7 @@ namespace Quanta.Core.Windows
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1021, 465);
+            ClientSize = new System.Drawing.Size(827, 461);
             Controls.Add(buttonSync);
             Controls.Add(dataGridView1);
             Controls.Add(button3);
