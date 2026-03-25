@@ -12,9 +12,35 @@ Sync `alerts.json` to the OneDrive for Business local sync folder, which already
 - Push: Automatic after save, if the remote folder is reachable
 - Remote subfolder: `Quanta\` inside the configured sync path
 
+> Deferred change: the newer-update-wins conflict model discussed on 2026-03-25 is intentionally postponed until after the initial Phase 1-4 path is in place.
+
+## Progress
+
+- [x] Phase 1 — Configuration
+- [x] Phase 2 — SyncService
+- [x] Phase 3 — UI Integration in ViewAlerts
+- [x] Phase 4 — Persist Last-Sync Timestamp
+
+## Change Log
+
+### 2026-03-25
+
+- Completed Phase 1 configuration in `Quanta.Core.Windows/appsettings.json`
+- Added `syncFolderPath` for the local OneDrive for Business mount point
+- Added `syncEnabled` toggle to allow sync to be disabled without removing the path
+- Completed Phase 2 by adding `Quanta.Core.Service/SyncService.cs`
+- Added `SyncResult`, `IsRemoteAvailable()`, `PullFromRemote()`, and `PushToRemote()`
+- Completed Phase 3 by wiring `ViewAlerts` to manual pull and post-save push actions
+- Added a Sync button and sync status label to `ViewAlerts`
+- Completed Phase 4 by persisting last successful sync time to `c:\quanta\sync-state.json`
+- Added load-time sync status display using the persisted timestamp
+- Deferred the newer-update-wins conflict model until after Phase 4 to avoid widening the initial implementation scope
+
 ---
 
 ## Phase 1 — Configuration
+
+Status: Completed on 2026-03-25
 
 Add two new keys to `Quanta.Core.Windows/appsettings.json`:
 
@@ -33,6 +59,8 @@ Add two new keys to `Quanta.Core.Windows/appsettings.json`:
 ---
 
 ## Phase 2 — SyncService
+
+Status: Completed on 2026-03-25
 
 Create `Quanta.Core.Service/SyncService.cs`, extending `BaseService` to reuse the existing config loading pattern.
 
@@ -61,6 +89,8 @@ Both methods catch exceptions and return `SyncResult.Offline` when the folder is
 
 ## Phase 3 — UI Integration in ViewAlerts
 
+Status: Completed on 2026-03-25
+
 ### 3a. Add controls to ViewAlerts.Designer.cs
 
 - **"Sync" button** — placed alongside the existing Save/Add buttons
@@ -73,7 +103,7 @@ On click:
   result = SyncService.PullFromRemote(localAlertsPath)
   switch result:
     Success  → reload alerts from local file, refresh DataGridView, update label
-    Offline  → update label to "Offline — sync unavailable"
+    Offline  → update label to "Offline - sync unavailable"
     Error    → show MessageBox with error detail
 ```
 
@@ -85,13 +115,15 @@ After `AlertService.WriteAlertsToFile(alerts)` completes:
 result = SyncService.PushToRemote(localAlertsPath)
 switch result:
   Success  → update "Last synced: <timestamp>" label
-  Offline  → update label to "(saved locally only)"
-  Error    → log/show brief warning (non-blocking)
+  Offline  → update label to "Saved locally only"
+  Error    → show a brief non-blocking local warning
 ```
 
 ---
 
 ## Phase 4 — Persist Last-Sync Timestamp
+
+Status: Completed on 2026-03-25
 
 Write the last-sync timestamp to `c:\quanta\sync-state.json` after every successful push or pull:
 
@@ -110,9 +142,9 @@ Display it on `ViewAlerts` form load as `"Last synced: 3/24/2026 2:15 PM"`. If t
 | File | Change |
 |---|---|
 | `Quanta.Core.Windows/appsettings.json` | Add `syncFolderPath`, `syncEnabled` |
-| `Quanta.Core.Service/SyncService.cs` | **New file** |
-| `Quanta.Core.Windows/ViewAlerts.cs` | Add Sync button handler, push-after-save, label updates |
-| `Quanta.Core.Windows/ViewAlerts.Designer.cs` | Add Sync button + status label controls |
+| `Quanta.Core.Service/SyncService.cs` | New sync logic and sync-state persistence |
+| `Quanta.Core.Windows/ViewAlerts.cs` | Sync button handler, push-after-save, label updates |
+| `Quanta.Core.Windows/ViewAlerts.Designer.cs` | Sync button + status label controls |
 
 ### Reference files (read-only context)
 
@@ -124,11 +156,12 @@ Display it on `ViewAlerts` form load as `"Last synced: 3/24/2026 2:15 PM"`. If t
 
 ## Verification Checklist
 
-1. **Online — pull**: Click Sync → `alerts.json` appears/updates in `<syncFolderPath>\Quanta\`
+1. **Online — pull**: Click Sync → local `alerts.json` updates from `<syncFolderPath>\Quanta\alerts.json`
 2. **Offline — pull**: Remove sync folder or disconnect → click Sync → label shows "Offline", no crash
 3. **Conflict (remote wins)**: Edit alerts on a second machine via OneDrive, then click Sync on this machine → local file is overwritten
 4. **Online — push after save**: Save alerts → push happens silently, label shows `"Last synced: ..."`
-5. **Offline — push after save**: Save alerts with no network → local save succeeds, label shows `"(saved locally only)"`
+5. **Offline — push after save**: Save alerts with no network → local save succeeds, label shows `"Saved locally only"`
+6. **Last-sync persistence**: Close and reopen `ViewAlerts` after a successful sync → previous sync time is displayed from `sync-state.json`
 
 ---
 

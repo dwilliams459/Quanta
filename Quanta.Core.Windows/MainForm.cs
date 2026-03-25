@@ -1,5 +1,6 @@
 using Quanta.Core.Domain;
 using Quanta.Core.Service;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -51,8 +52,20 @@ namespace Quanta.Core.Windows
 
         public AlertService AlertService { get; private set; } = new AlertService();
 
+        private readonly IConfigurationRoot config;
+        private readonly SyncService syncService = new SyncService();
+        private readonly string alertsFilePath;
+        private readonly bool syncEnabled;
+
         public MainForm()
         {
+            config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            alertsFilePath = config.GetValue<string>("alertsfilename", "c:/quanta/alerts.json");
+            syncEnabled = bool.TryParse(config.GetValue<string>("syncEnabled", "false"), out var enabled) && enabled;
+
             // Instantiate Microsoft Log variable
             try
             {
@@ -107,6 +120,8 @@ namespace Quanta.Core.Windows
             {
                 // Ignored because no alert file found does not cause and issue.
             }
+
+            syncAlertsToolStripMenuItem.Visible = syncEnabled;
 
             SetupHotkeys();
             LoadAutoDisplaySettings();
@@ -745,6 +760,41 @@ namespace Quanta.Core.Windows
             viewAlertsForm.Show();
         }
 
+        private void syncAlertsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var result = syncService.PullFromRemote(alertsFilePath);
+                switch (result)
+                {
+                    case SyncResult.Success:
+                        Alerts = AlertService.GetAlerts();
+                        ShowSyncStatus("Quanta Sync", syncService.GetLastSyncStatusText(), ToolTipIcon.Info);
+                        break;
+                    case SyncResult.Offline:
+                        ShowSyncStatus("Quanta Sync", "Offline - sync unavailable", ToolTipIcon.Warning);
+                        break;
+                    case SyncResult.Error:
+                        ShowSyncStatus(
+                            "Quanta Sync",
+                            string.IsNullOrWhiteSpace(syncService.LastErrorMessage) ? "Sync failed." : syncService.LastErrorMessage,
+                            ToolTipIcon.Error);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowSyncStatus("Quanta Sync", ex.Message, ToolTipIcon.Error);
+            }
+        }
+
+        private void ShowSyncStatus(string title, string message, ToolTipIcon toolTipIcon)
+        {
+            icon.BalloonTipTitle = title;
+            icon.BalloonTipText = message;
+            icon.BalloonTipIcon = toolTipIcon;
+            icon.ShowBalloonTip(3000);
+        }
         private void iconContextMenu_Opening(object sender, CancelEventArgs e)
         {
         }
@@ -863,3 +913,4 @@ namespace Quanta.Core.Windows
         }
     }
 }
+
