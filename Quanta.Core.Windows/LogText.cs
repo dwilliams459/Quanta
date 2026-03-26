@@ -105,13 +105,17 @@ namespace Quanta.Core.Windows
                 
                 // Extract only the first word from txtUsId (typically the User Story ID)
                 var userStoryId = txtUsId.Text.Trim().Split(new[] { ' ', '-' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? string.Empty;
-                
-                // Append the User Story ID to the description if it was entered
+                var length = txtLength.Text.Trim();
+
+                // Build parenthetical suffix: ([length], US: [userStory])
+                var suffixParts = new System.Collections.Generic.List<string>();
+                if (!string.IsNullOrWhiteSpace(length))
+                    suffixParts.Add(length);
                 if (!string.IsNullOrWhiteSpace(userStoryId))
-                {
-                    logDesc = $"{logDesc} ({userStoryId})";
-                }
-                
+                    suffixParts.Add($"US: {userStoryId}");
+                if (suffixParts.Count > 0)
+                    logDesc = $"{logDesc} ({string.Join(", ", suffixParts)})";
+
                 await fileLog.LogEvent(logDesc, userStoryId, txtLength.Text);
             }
             catch (Exception ex)
