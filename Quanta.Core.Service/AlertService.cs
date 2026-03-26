@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Quanta.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Quanta.Core.Service
 {
     public class AlertService : BaseService
     {
+        private const int AlertGuidLength = 10;
         private string alertsFileName;
 
         public AlertService()
@@ -17,17 +19,9 @@ namespace Quanta.Core.Service
             SetAlertsFileName();
         }
 
-        //public List<Alert> ReadAlertsFromFile(string filePath)
-        //{
-        //    string json = File.ReadAllText(filePath);
-        //    List<Alert> alerts = JsonConvert.DeserializeObject<List<Alert>>(json);
-        //    return alerts;
-        //}
-
         public bool AlertMatch(Alert alert)
         {
             var now = DateTime.Now;
-            var dayOfWeek = now.DayOfWeek.ToString().Substring(0, 3);
 
             if (InRange(alert.AlertDateTime, now, 1))
             {
@@ -36,12 +30,8 @@ namespace Quanta.Core.Service
 
             if (alert.Repeat)
             {
-                // Return true if the day of the week is in the list of days of the week and is the same time of day as the alert
-                // Days Of Week formated like: "Sun,Mon,Tue,Wed,Thu,Fri,Sat"
-                //if (alert.DaysOfWeek.Contains(dayOfWeek, StringComparison.CurrentCultureIgnoreCase) && InRange(alert.AlertDateTime.TimeOfDay, now.TimeOfDay))
                 if (TodayAlertDateMatch(alert) && InRange(alert.AlertDateTime.TimeOfDay, now.TimeOfDay))
                 {
-                    // If today is after alert end time, return false
                     if (DateTime.Now > alert.AlertEndTime)
                     {
                         return false;
@@ -60,11 +50,11 @@ namespace Quanta.Core.Service
 
             return dayOfWeek switch
             {
-                DayOfWeek.Monday => (alert.Monday == true),
-                DayOfWeek.Tuesday => (alert.Tuesday == true),
-                DayOfWeek.Wednesday => (alert.Wednesday == true),
-                DayOfWeek.Thursday => (alert.Thursday == true),
-                DayOfWeek.Friday => (alert.Friday == true),
+                DayOfWeek.Monday => alert.Monday == true,
+                DayOfWeek.Tuesday => alert.Tuesday == true,
+                DayOfWeek.Wednesday => alert.Wednesday == true,
+                DayOfWeek.Thursday => alert.Thursday == true,
+                DayOfWeek.Friday => alert.Friday == true,
                 _ => false
             };
         }
@@ -75,57 +65,126 @@ namespace Quanta.Core.Service
 
         public List<Alert> GetAlerts()
         {
-            if (CreateIfDoesNotExist(alertsFileName))
+            return GetAlerts(alertsFileName);
+        }
+
+        public List<Alert> GetAlerts(string filePath)
+        {
+            var alerts = ReadAlertsFromFile(filePath, out var fileChanged);
+            if (fileChanged)
             {
-                // File did not exist, return empty list
+                PersistAlerts(filePath, alerts);
+            }
+
+            return alerts;
+        }
+
+        public bool NormalizeAlertsFile(string filePath)
+        {
+            var alerts = ReadAlertsFromFile(filePath, out var fileChanged);
+            if (!fileChanged)
+            {
+                return false;
+            }
+
+            PersistAlerts(filePath, alerts);
+            return true;
+        }
+
+        private string SetAlertsFileName()
+        {
+            alertsFileName = _config.GetValue<string>("alertsfilename", "c:/quanta/alerts.json");
+            return alertsFileName;
+        }
+
+        public bool WriteAlertsToFile(List<Alert> alerts)
+        {
+            return WriteAlertsToFile(alerts, alertsFileName);
+        }
+
+        public bool WriteAlertsToFile(List<Alert> alerts, string filePath)
+        {
+            alerts ??= new List<Alert>();
+            EnsureAlertGuids(alerts);
+            PersistAlerts(filePath, alerts);
+            return true;
+        }
+
+        private List<Alert> ReadAlertsFromFile(string filePath, out bool fileChanged)
+        {
+            fileChanged = false;
+
+            if (CreateIfDoesNotExist(filePath))
+            {
                 return new List<Alert>();
             }
 
-            var alertsText = File.ReadAllText(alertsFileName);
-
+            var alertsText = File.ReadAllText(filePath);
             if (string.IsNullOrWhiteSpace(alertsText))
             {
                 return new List<Alert>();
             }
 
-            var alerts = JsonConvert.DeserializeObject<List<Alert>>(alertsText);
+            var alerts = JsonConvert.DeserializeObject<List<Alert>>(alertsText) ?? new List<Alert>();
+            fileChanged = EnsureAlertGuids(alerts);
             return alerts;
         }
 
-        private string SetAlertsFileName()
-        {
-            //if (File.Exists(_config.GetValue<string>("alertsfilenamedev")))
-            //{
-            //    alertsFileName = _config.GetValue<string>("alertsfilenamedev");
-            //}
-            //else
-            //{
-            //    alertsFileName = _config.GetValue<string>("alertsfilename", "c:/quanta/alerts.json");
-            //    if (!File.Exists(alertsFileName))
-            //    {
-            //        File.Create(alertsFileName);
-            //    }
-            //}
-
-            alertsFileName = _config.GetValue<string>("alertsfilename", "c:/quanta/alerts.json");
-
-            return alertsFileName;
-        }
-
-        private string GetAlertsTextFromFile()
-        {
-            var alertsText = File.ReadAllText(alertsFileName);
-            return alertsText;
-        }
-
-        public bool WriteAlertsToFile(List<Alert> alerts)
+        private void PersistAlerts(string filePath, List<Alert> alerts)
         {
             var alertsText = JsonConvert.SerializeObject(alerts, Formatting.Indented);
+            CreateIfDoesNotExist(filePath);
+            File.WriteAllText(filePath, alertsText);
+        }
 
-            CreateIfDoesNotExist(alertsFileName);
+        private bool EnsureAlertGuids(IList<Alert> alerts)
+        {
+            var changed = false;
+            var existingGuids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            File.WriteAllText(alertsFileName, alertsText);
-            return true;
+            foreach (var alert in alerts.Where(alert => alert != null))
+            {
+                if (string.IsNullOrWhiteSpace(alert.Guid))
+                {
+                    continue;
+                }
+
+                var trimmedGuid = alert.Guid.Trim();
+                if (!string.Equals(trimmedGuid, alert.Guid, StringComparison.Ordinal))
+                {
+                    alert.Guid = trimmedGuid;
+                    changed = true;
+                }
+
+                existingGuids.Add(alert.Guid);
+            }
+
+            foreach (var alert in alerts.Where(alert => alert != null))
+            {
+                if (!string.IsNullOrWhiteSpace(alert.Guid))
+                {
+                    continue;
+                }
+
+                alert.Guid = GenerateAlertGuid(existingGuids);
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        private static string GenerateAlertGuid(ISet<string> existingGuids)
+        {
+            string nextGuid;
+
+            do
+            {
+                nextGuid = Guid.NewGuid().ToString("N")[..AlertGuidLength].ToUpperInvariant();
+            }
+            while (existingGuids.Contains(nextGuid));
+
+            existingGuids.Add(nextGuid);
+            return nextGuid;
         }
     }
 }

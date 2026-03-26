@@ -71,7 +71,18 @@ namespace Quanta.Core.Windows
                 if (dialogResult == DialogResult.OK)
                 {
                     alertService.WriteAlertsToFile(alerts);
-                    HandlePushResult(syncService.PushToRemote(alertsFilePath));
+
+                    if (syncEnabled)
+                    {
+                        if (syncService.CanPush())
+                        {
+                            HandlePushResult(syncService.PushToRemote(alertsFilePath));
+                        }
+                        else
+                        {
+                            labelSyncStatus.Text = "Saved locally only";
+                        }
+                    }
                 }
 
                 if (MainForm.Instance != null)
@@ -93,6 +104,9 @@ namespace Quanta.Core.Windows
             {
                 case SyncResult.Success:
                     RefreshSyncStatusLabel();
+                    break;
+                case SyncResult.Skipped:
+                    labelSyncStatus.Text = "Saved locally only";
                     break;
                 case SyncResult.Offline:
                     labelSyncStatus.Text = "Saved locally only";
@@ -117,6 +131,9 @@ namespace Quanta.Core.Windows
                         MainForm.Instance.Alerts = alertService.GetAlerts();
                     }
                     RefreshSyncStatusLabel();
+                    break;
+                case SyncResult.Skipped:
+                    labelSyncStatus.Text = "Sync disabled";
                     break;
                 case SyncResult.Offline:
                     labelSyncStatus.Text = "Offline - sync unavailable";
@@ -148,6 +165,18 @@ namespace Quanta.Core.Windows
         {
             buttonSync.Visible = syncEnabled;
             labelSyncStatus.Visible = syncEnabled;
+
+            if (!syncEnabled)
+            {
+                return;
+            }
+
+            buttonSync.Text = syncService.GetManualSyncText();
+
+            if (!syncService.CanPush())
+            {
+                button2.Text = "Save Local";
+            }
         }
 
         private void DataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -286,7 +315,16 @@ namespace Quanta.Core.Windows
             try
             {
                 label1.Text = string.Empty;
-                HandlePullResult(syncService.PullFromRemote(alertsFilePath));
+                var result = syncService.PerformConfiguredSync(alertsFilePath);
+
+                if (syncService.CanPush())
+                {
+                    HandlePushResult(result);
+                }
+                else
+                {
+                    HandlePullResult(result);
+                }
             }
             catch (Exception ex)
             {

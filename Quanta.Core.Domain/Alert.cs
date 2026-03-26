@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Text;
 
 namespace Quanta.Core.Domain
 {
     public class Alert
     {
+        public string Guid { get; set; }
         public string Title { get; set; }
         public DateTime AlertDateTime { get; set; }
         public DateTime? AlertEndTime { get; set; }
@@ -51,11 +52,9 @@ namespace Quanta.Core.Domain
 
             if (!Repeat)
             {
-                // If the event does not repeat, return the AlertDateTime if it's in the future
                 return nextOccurrence >= today ? nextOccurrence : (DateTime?)null;
             }
 
-            // If the event repeats, find the next occurrence
             while (nextOccurrence < today || !IsEventDay(nextOccurrence.DayOfWeek))
             {
                 nextOccurrence = nextOccurrence.AddDays(1);

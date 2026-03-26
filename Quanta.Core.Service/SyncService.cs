@@ -9,7 +9,14 @@ namespace Quanta.Core.Service
     {
         Success,
         Offline,
+        Skipped,
         Error
+    }
+
+    public enum SyncRole
+    {
+        Target,
+        Source
     }
 
     public class SyncService : BaseService
@@ -17,11 +24,19 @@ namespace Quanta.Core.Service
         private const string RemoteFolderName = "Quanta";
         private const string AlertsFileName = "alerts.json";
         private const string SyncStateFilePath = "c:/quanta/sync-state.json";
+        private const string PushAction = "Push";
+        private const string PullAction = "Pull";
 
+        private readonly AlertService alertService = new AlertService();
         private readonly string syncFolderPath;
         private readonly bool syncEnabled;
+        private readonly SyncRole syncRole;
 
         public string LastErrorMessage { get; private set; } = string.Empty;
+        public bool IsSyncEnabled => syncEnabled;
+        public bool IsSource => syncRole == SyncRole.Source;
+        public bool IsTarget => syncRole == SyncRole.Target;
+        public SyncRole Role => syncRole;
 
         public SyncService()
         {
@@ -31,6 +46,26 @@ namespace Quanta.Core.Service
 
             syncFolderPath = _config.GetValue<string>("syncFolderPath", string.Empty) ?? string.Empty;
             syncEnabled = bool.TryParse(_config.GetValue<string>("syncEnabled", "false"), out var enabled) && enabled;
+
+            var configuredRole = _config.GetValue<string>("syncRole", nameof(SyncRole.Target));
+            syncRole = Enum.TryParse(configuredRole, true, out SyncRole parsedRole)
+                ? parsedRole
+                : SyncRole.Target;
+        }
+
+        public bool CanPush()
+        {
+            return syncEnabled && IsSource;
+        }
+
+        public bool CanPull()
+        {
+            return syncEnabled;
+        }
+
+        public string GetManualSyncText()
+        {
+            return IsSource ? "Publish" : "Refresh";
         }
 
         public bool IsRemoteAvailable()
@@ -43,9 +78,19 @@ namespace Quanta.Core.Service
             return Directory.Exists(syncFolderPath);
         }
 
+        public SyncResult PerformConfiguredSync(string localFilePath)
+        {
+            return IsSource ? PushToRemote(localFilePath) : PullFromRemote(localFilePath);
+        }
+
         public SyncResult PullFromRemote(string localFilePath)
         {
             LastErrorMessage = string.Empty;
+
+            if (!CanPull())
+            {
+                return SyncResult.Skipped;
+            }
 
             if (!IsRemoteAvailable())
             {
@@ -61,9 +106,11 @@ namespace Quanta.Core.Service
                     return SyncResult.Error;
                 }
 
+                alertService.NormalizeAlertsFile(remoteFilePath);
                 CreateIfDoesNotExist(localFilePath);
                 File.Copy(remoteFilePath, localFilePath, true);
-                WriteSyncState(DateTime.UtcNow);
+                alertService.NormalizeAlertsFile(localFilePath);
+                WriteSyncState(DateTime.UtcNow, PullAction);
                 return SyncResult.Success;
             }
             catch (DirectoryNotFoundException ex)
@@ -87,6 +134,16 @@ namespace Quanta.Core.Service
         {
             LastErrorMessage = string.Empty;
 
+            if (!syncEnabled)
+            {
+                return SyncResult.Skipped;
+            }
+
+            if (!CanPush())
+            {
+                return SyncResult.Skipped;
+            }
+
             if (!IsRemoteAvailable())
             {
                 return SyncResult.Offline;
@@ -100,12 +157,14 @@ namespace Quanta.Core.Service
                     return SyncResult.Error;
                 }
 
+                alertService.NormalizeAlertsFile(localFilePath);
+
                 var remoteDirectoryPath = GetRemoteDirectoryPath();
                 Directory.CreateDirectory(remoteDirectoryPath);
 
                 var remoteFilePath = GetRemoteAlertsFilePath();
                 File.Copy(localFilePath, remoteFilePath, true);
-                WriteSyncState(DateTime.UtcNow);
+                WriteSyncState(DateTime.UtcNow, PushAction);
                 return SyncResult.Success;
             }
             catch (DirectoryNotFoundException ex)
@@ -125,7 +184,25 @@ namespace Quanta.Core.Service
             }
         }
 
-        public DateTime? GetLastSyncedUtc()
+        public string GetLastSyncStatusText()
+        {
+            var syncState = GetSyncState();
+            if (syncState == null || syncState.LastSyncUtc == default)
+            {
+                return "Never synced";
+            }
+
+            var actionLabel = syncState.LastSyncAction switch
+            {
+                PushAction => "Last published",
+                PullAction => "Last refreshed",
+                _ => "Last synced"
+            };
+
+            return $"{actionLabel}: {syncState.LastSyncUtc.ToLocalTime():M/d/yyyy h:mm tt}";
+        }
+
+        private SyncState GetSyncState()
         {
             try
             {
@@ -140,8 +217,7 @@ namespace Quanta.Core.Service
                     return null;
                 }
 
-                var syncState = JsonConvert.DeserializeObject<SyncState>(syncStateText);
-                return syncState?.LastSyncedUtc;
+                return JsonConvert.DeserializeObject<SyncState>(syncStateText);
             }
             catch (Exception ex)
             {
@@ -150,22 +226,12 @@ namespace Quanta.Core.Service
             }
         }
 
-        public string GetLastSyncStatusText()
-        {
-            var lastSyncedUtc = GetLastSyncedUtc();
-            if (!lastSyncedUtc.HasValue)
-            {
-                return "Never synced";
-            }
-
-            return $"Last synced: {lastSyncedUtc.Value.ToLocalTime():M/d/yyyy h:mm tt}";
-        }
-
-        private void WriteSyncState(DateTime lastSyncedUtc)
+        private void WriteSyncState(DateTime lastSyncedUtc, string lastSyncAction)
         {
             var syncState = new SyncState
             {
-                LastSyncedUtc = lastSyncedUtc
+                LastSyncUtc = lastSyncedUtc,
+                LastSyncAction = lastSyncAction
             };
 
             CreateIfDoesNotExist(SyncStateFilePath);
@@ -184,7 +250,8 @@ namespace Quanta.Core.Service
 
         private class SyncState
         {
-            public DateTime LastSyncedUtc { get; set; }
+            public DateTime LastSyncUtc { get; set; }
+            public string LastSyncAction { get; set; } = string.Empty;
         }
     }
 }

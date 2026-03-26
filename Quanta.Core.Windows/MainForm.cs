@@ -35,6 +35,7 @@ namespace Quanta.Core.Windows
         private DateTime delayTimerUntil = DateTime.Now;
         private DateTime lastAutoDisplayCheck = DateTime.MinValue;
         private Timer autoDisplayTimer;
+        private Timer hourlySyncTimer;
 
         private bool myVisible;
 
@@ -122,10 +123,12 @@ namespace Quanta.Core.Windows
             }
 
             syncAlertsToolStripMenuItem.Visible = syncEnabled;
+            syncAlertsToolStripMenuItem.Text = $"{syncService.GetManualSyncText()} Alerts";
 
             SetupHotkeys();
             LoadAutoDisplaySettings();
             SetupAutoDisplayTimer();
+            SetupHourlySyncTimer();
         }
 
         private void SetupHotkeys()
@@ -760,31 +763,74 @@ namespace Quanta.Core.Windows
             viewAlertsForm.Show();
         }
 
+        private void SetupHourlySyncTimer()
+        {
+            if (!syncEnabled)
+            {
+                return;
+            }
+
+            hourlySyncTimer = new Timer(this.components)
+            {
+                Interval = 3600000
+            };
+            hourlySyncTimer.Tick += HourlySyncTimer_Tick;
+            hourlySyncTimer.Start();
+        }
+
+        private void HourlySyncTimer_Tick(object sender, EventArgs e)
+        {
+            ExecuteConfiguredSync(showStatus: false);
+        }
+
         private void syncAlertsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteConfiguredSync(showStatus: true);
+        }
+
+        private void ExecuteConfiguredSync(bool showStatus)
         {
             try
             {
-                var result = syncService.PullFromRemote(alertsFilePath);
+                var result = syncService.PerformConfiguredSync(alertsFilePath);
                 switch (result)
                 {
                     case SyncResult.Success:
                         Alerts = AlertService.GetAlerts();
-                        ShowSyncStatus("Quanta Sync", syncService.GetLastSyncStatusText(), ToolTipIcon.Info);
+                        if (showStatus)
+                        {
+                            ShowSyncStatus("Quanta Sync", syncService.GetLastSyncStatusText(), ToolTipIcon.Info);
+                        }
+                        break;
+                    case SyncResult.Skipped:
+                        if (showStatus)
+                        {
+                            ShowSyncStatus("Quanta Sync", "Sync disabled for this instance.", ToolTipIcon.Info);
+                        }
                         break;
                     case SyncResult.Offline:
-                        ShowSyncStatus("Quanta Sync", "Offline - sync unavailable", ToolTipIcon.Warning);
+                        if (showStatus)
+                        {
+                            ShowSyncStatus("Quanta Sync", "Offline - sync unavailable", ToolTipIcon.Warning);
+                        }
                         break;
                     case SyncResult.Error:
-                        ShowSyncStatus(
-                            "Quanta Sync",
-                            string.IsNullOrWhiteSpace(syncService.LastErrorMessage) ? "Sync failed." : syncService.LastErrorMessage,
-                            ToolTipIcon.Error);
+                        if (showStatus)
+                        {
+                            ShowSyncStatus(
+                                "Quanta Sync",
+                                string.IsNullOrWhiteSpace(syncService.LastErrorMessage) ? "Sync failed." : syncService.LastErrorMessage,
+                                ToolTipIcon.Error);
+                        }
                         break;
                 }
             }
             catch (Exception ex)
             {
-                ShowSyncStatus("Quanta Sync", ex.Message, ToolTipIcon.Error);
+                if (showStatus)
+                {
+                    ShowSyncStatus("Quanta Sync", ex.Message, ToolTipIcon.Error);
+                }
             }
         }
 
@@ -913,4 +959,5 @@ namespace Quanta.Core.Windows
         }
     }
 }
+
 

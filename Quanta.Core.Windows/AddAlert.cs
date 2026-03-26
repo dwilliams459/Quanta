@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Quanta.Core.Domain;
 using Quanta.Core.Service;
 using System;
@@ -13,12 +13,16 @@ namespace Quanta.Core.Windows
         private bool isValid;
         private List<Alert> alerts;
         private IConfigurationRoot _config;
-        private AlertService alertService; // Add this line
+        private readonly AlertService alertService;
+        private readonly SyncService syncService;
+        private readonly string alertsFilePath;
 
-        public AddAlert() // Modify constructor to accept IAlertService
+        public AddAlert()
         {
             alertService = new AlertService();
+            syncService = new SyncService();
             _config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            alertsFilePath = _config.GetValue<string>("alertsfilename", "c:/quanta/alerts.json");
 
             InitializeComponent();
 
@@ -122,10 +126,23 @@ namespace Quanta.Core.Windows
             // Add new alert to list of alerts
             alerts.Add(newEvent);
 
-            // Save Events
-            alertService.WriteAlertsToFile(alerts); // SaveAlertsToFile(alerts);
-            //var alertText = JsonConvert.SerializeObject(alerts, Formatting.Indented);
-            //File.WriteAllText(_config.GetValue<string>("alertsfilename"), alertText);
+            alertService.WriteAlertsToFile(alerts);
+
+            if (syncService.CanPush())
+            {
+                var syncResult = syncService.PushToRemote(alertsFilePath);
+                if (syncResult == SyncResult.Offline)
+                {
+                    MessageBox.Show("Alert saved locally only. Publish is currently unavailable.", "Sync Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if (syncResult == SyncResult.Error)
+                {
+                    var message = string.IsNullOrWhiteSpace(syncService.LastErrorMessage)
+                        ? "Alert saved locally, but publish failed."
+                        : $"Alert saved locally, but publish failed: {syncService.LastErrorMessage}";
+                    MessageBox.Show(message, "Sync Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
 
             this.Close();
             return true;
