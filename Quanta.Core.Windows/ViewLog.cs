@@ -303,5 +303,124 @@ namespace Quanta.Core.Windows
                 richTextBox1.ScrollToCaret();
             }
         }
+
+        private void btnGenerateMarkdown_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get the activity tracker guide filename from config
+                string guideFilename = _config.GetValue<string>("activityTrackerGuideFilename");
+
+                if (string.IsNullOrWhiteSpace(guideFilename))
+                {
+                    label1.Text = "Activity tracker guide filename not configured in appsettings.json";
+                    return;
+                }
+
+                // Read the guide content if the file exists
+                string guideContent = "";
+                if (File.Exists(guideFilename))
+                {
+                    guideContent = File.ReadAllText(guideFilename);
+                }
+                else
+                {
+                    label1.Text = $"Activity tracker guide file not found: {guideFilename}";
+                    return;
+                }
+
+                // Get log entries from the last week
+                string lastWeekLogs = GetLastWeekLogs();
+
+                // Combine the content
+                StringBuilder markdownContent = new StringBuilder();
+                markdownContent.AppendLine("Convert the log entries at the end of this file under 'Log Etries - Last Weel' to the format as described in the # Activity Tracker and Time Entry guide.");
+                markdownContent.AppendLine("---");
+                markdownContent.AppendLine(guideContent);
+                markdownContent.AppendLine();
+                markdownContent.AppendLine("---");
+                markdownContent.AppendLine();
+                markdownContent.AppendLine("# Log Entries - Last Week");
+                markdownContent.AppendLine("Convert the following log entries to the format as described above.");
+                markdownContent.AppendLine();
+                markdownContent.AppendLine("```");
+                markdownContent.AppendLine(lastWeekLogs);
+                markdownContent.AppendLine("```");
+                markdownContent.AppendLine("Convert the previous log entries to the format as described above.");
+
+                // Prompt user for save location
+                using (SaveFileDialog saveDialog = new SaveFileDialog())
+                {
+                    saveDialog.Filter = "Markdown files (*.md)|*.md|All files (*.*)|*.*";
+                    saveDialog.DefaultExt = "md";
+                    saveDialog.FileName = $"activity-tracker-{DateTime.Now:yyyy-MM-dd}.md";
+                    saveDialog.InitialDirectory = Path.GetDirectoryName(guideFilename);
+
+                    if (saveDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllText(saveDialog.FileName, markdownContent.ToString());
+                        label1.ForeColor = Color.Green;
+                        label1.Text = $"Markdown file generated: {saveDialog.FileName}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                label1.ForeColor = Color.Maroon;
+                label1.Text = $"Error generating markdown: {ex.Message}";
+            }
+        }
+
+        private string GetLastWeekLogs()
+        {
+            try
+            {
+                // RichTextBox uses \v as line separator, replace it with \r\n
+                string logText = richTextBox1.Text.Replace("\v", "\r\n");
+                DateTime oneWeekAgo = DateTime.Now.AddDays(-7);
+
+                StringBuilder lastWeekLogs = new StringBuilder();
+                string[] lines = logText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+                foreach (string line in lines)
+                {
+                    if (line.Length >= 14)
+                    {
+                        string dateString = line.Substring(0, 14);
+                        if (DateTime.TryParseExact(dateString, "MM/dd/yy HH:mm", null, 
+                            System.Globalization.DateTimeStyles.None, out DateTime entryDate))
+                        {
+                            if (entryDate >= oneWeekAgo)
+                            {
+                                lastWeekLogs.AppendLine(line);
+                            }
+                        }
+                        else
+                        {
+                            // Include lines without valid dates if we're already in the last week
+                            if (lastWeekLogs.Length > 0)
+                            {
+                                lastWeekLogs.AppendLine(line);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Include short lines if we're already collecting last week's data
+                        if (lastWeekLogs.Length > 0)
+                        {
+                            lastWeekLogs.AppendLine(line);
+                        }
+                    }
+                }
+
+                return lastWeekLogs.ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting last week logs: {ex.Message}");
+                return richTextBox1.Text; // Return all logs if there's an error
+            }
+        }
     }
 }

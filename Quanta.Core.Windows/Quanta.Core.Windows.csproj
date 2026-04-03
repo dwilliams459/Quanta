@@ -51,6 +51,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="activity-tracker-guide.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
     <None Update="alerts.dev.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

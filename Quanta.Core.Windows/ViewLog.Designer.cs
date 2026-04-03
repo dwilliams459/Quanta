@@ -37,6 +37,7 @@ namespace Quanta.Core.Windows
             richTextBox1 = new System.Windows.Forms.RichTextBox();
             searchTextBox = new System.Windows.Forms.TextBox();
             button3 = new System.Windows.Forms.Button();
+            btnGenerateMarkdown = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // button2
@@ -113,11 +114,23 @@ namespace Quanta.Core.Windows
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
+            // btnGenerateMarkdown
+            // 
+            btnGenerateMarkdown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnGenerateMarkdown.Location = new System.Drawing.Point(380, 643);
+            btnGenerateMarkdown.Name = "btnGenerateMarkdown";
+            btnGenerateMarkdown.Size = new System.Drawing.Size(139, 23);
+            btnGenerateMarkdown.TabIndex = 8;
+            btnGenerateMarkdown.Text = "Generate Markdown";
+            btnGenerateMarkdown.UseVisualStyleBackColor = true;
+            btnGenerateMarkdown.Click += btnGenerateMarkdown_Click;
+            // 
             // ViewLog
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(717, 670);
+            Controls.Add(btnGenerateMarkdown);
             Controls.Add(button3);
             Controls.Add(searchTextBox);
             Controls.Add(richTextBox1);
@@ -140,5 +153,6 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.TextBox searchTextBox;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnGenerateMarkdown;
     }
 }
