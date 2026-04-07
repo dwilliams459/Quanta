@@ -37,6 +37,8 @@ namespace Quanta.Core.Windows
             richTextBox1 = new System.Windows.Forms.RichTextBox();
             searchTextBox = new System.Windows.Forms.TextBox();
             button3 = new System.Windows.Forms.Button();
+            btnGenerateMarkdown = new System.Windows.Forms.Button();
+            txtMarkdownDays = new System.Windows.Forms.TextBox();
             SuspendLayout();
             // 
             // button2
@@ -63,11 +65,13 @@ namespace Quanta.Core.Windows
             // 
             // label1
             // 
+            label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             label1.AutoSize = true;
             label1.ForeColor = System.Drawing.Color.Maroon;
-            label1.Location = new System.Drawing.Point(12, 645);
+            label1.Location = new System.Drawing.Point(202, 647);
+            label1.MinimumSize = new System.Drawing.Size(20, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(0, 15);
+            label1.Size = new System.Drawing.Size(20, 15);
             label1.TabIndex = 3;
             // 
             // btnRefresh
@@ -113,11 +117,35 @@ namespace Quanta.Core.Windows
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
+            // btnGenerateMarkdown
+            // 
+            btnGenerateMarkdown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            btnGenerateMarkdown.Location = new System.Drawing.Point(14, 643);
+            btnGenerateMarkdown.Name = "btnGenerateMarkdown";
+            btnGenerateMarkdown.Size = new System.Drawing.Size(139, 23);
+            btnGenerateMarkdown.TabIndex = 8;
+            btnGenerateMarkdown.Text = "Generate Markdown";
+            btnGenerateMarkdown.UseVisualStyleBackColor = true;
+            btnGenerateMarkdown.Click += btnGenerateMarkdown_Click;
+            // 
+            // txtMarkdownDays
+            // 
+            txtMarkdownDays.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            txtMarkdownDays.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            txtMarkdownDays.Location = new System.Drawing.Point(159, 643);
+            txtMarkdownDays.Name = "txtMarkdownDays";
+            txtMarkdownDays.Size = new System.Drawing.Size(37, 22);
+            txtMarkdownDays.TabIndex = 10;
+            txtMarkdownDays.Text = "7";
+            txtMarkdownDays.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // ViewLog
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(717, 670);
+            Controls.Add(txtMarkdownDays);
+            Controls.Add(btnGenerateMarkdown);
             Controls.Add(button3);
             Controls.Add(searchTextBox);
             Controls.Add(richTextBox1);
@@ -140,5 +168,7 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.TextBox searchTextBox;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnGenerateMarkdown;
+        private System.Windows.Forms.TextBox txtMarkdownDays;
     }
 }

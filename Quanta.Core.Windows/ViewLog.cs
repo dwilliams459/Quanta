@@ -33,7 +33,7 @@ namespace Quanta.Core.Windows
             richTextBox1.ScrollToCaret();
         }
 
-        private void PopulateLog(string? logText = "")
+        private void PopulateLog(string logText = "")
         {
             try
             {
@@ -329,22 +329,29 @@ namespace Quanta.Core.Windows
                     return;
                 }
 
-                // Get log entries from the last week
-                string lastWeekLogs = GetLastWeekLogs();
+                if (!int.TryParse(txtMarkdownDays.Text.Trim(), out int daysToInclude) || daysToInclude <= 0)
+                {
+                    label1.ForeColor = Color.Maroon;
+                    label1.Text = "Enter a valid number of days greater than 0.";
+                    return;
+                }
+
+                // Get log entries from the requested number of days
+                string recentLogs = GetRecentLogs(daysToInclude);
 
                 // Combine the content
                 StringBuilder markdownContent = new StringBuilder();
-                markdownContent.AppendLine("Convert the log entries at the end of this file under 'Log Etries - Last Weel' to the format as described in the # AI Time Report guide.");
+                markdownContent.AppendLine($"Convert the log entries at the end of this file under 'Log Entries - Last {daysToInclude} Days' to the format as described in the # AI Time Report guide.");
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine(guideContent);
                 markdownContent.AppendLine();
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine();
-                markdownContent.AppendLine("# Log Entries - Last Week");
+                markdownContent.AppendLine($"# Log Entries - Last {daysToInclude} Days");
                 markdownContent.AppendLine("Convert the following log entries to the format as described above.");
                 markdownContent.AppendLine();
                 markdownContent.AppendLine("```");
-                markdownContent.AppendLine(lastWeekLogs);
+                markdownContent.AppendLine(recentLogs);
                 markdownContent.AppendLine("```");
                 markdownContent.AppendLine("Convert the previous log entries to the format as described above.");
 
@@ -360,7 +367,7 @@ namespace Quanta.Core.Windows
                     {
                         File.WriteAllText(saveDialog.FileName, markdownContent.ToString());
                         label1.ForeColor = Color.Green;
-                        label1.Text = $"Markdown file generated: {saveDialog.FileName}";
+                        label1.Text = $"AI report generated: {saveDialog.FileName}";
                     }
                 }
             }
@@ -371,15 +378,15 @@ namespace Quanta.Core.Windows
             }
         }
 
-        private string GetLastWeekLogs()
+        private string GetRecentLogs(int daysToInclude)
         {
             try
             {
                 // RichTextBox uses \v as line separator, replace it with \r\n
                 string logText = richTextBox1.Text.Replace("\v", "\r\n");
-                DateTime oneWeekAgo = DateTime.Now.AddDays(-7);
+            DateTime cutoffDate = DateTime.Now.AddDays(-daysToInclude);
 
-                StringBuilder lastWeekLogs = new StringBuilder();
+            StringBuilder recentLogs = new StringBuilder();
                 string[] lines = logText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
                 foreach (string line in lines)
@@ -390,31 +397,31 @@ namespace Quanta.Core.Windows
                         if (DateTime.TryParseExact(dateString, "MM/dd/yy HH:mm", null, 
                             System.Globalization.DateTimeStyles.None, out DateTime entryDate))
                         {
-                            if (entryDate >= oneWeekAgo)
+                            if (entryDate >= cutoffDate)
                             {
-                                lastWeekLogs.AppendLine(line);
+                                recentLogs.AppendLine(line);
                             }
                         }
                         else
                         {
-                            // Include lines without valid dates if we're already in the last week
-                            if (lastWeekLogs.Length > 0)
+                            // Include lines without valid dates if we're already collecting recent data
+                            if (recentLogs.Length > 0)
                             {
-                                lastWeekLogs.AppendLine(line);
+                                recentLogs.AppendLine(line);
                             }
                         }
                     }
                     else
                     {
-                        // Include short lines if we're already collecting last week's data
-                        if (lastWeekLogs.Length > 0)
+                        // Include short lines if we're already collecting recent data
+                        if (recentLogs.Length > 0)
                         {
-                            lastWeekLogs.AppendLine(line);
+                            recentLogs.AppendLine(line);
                         }
                     }
                 }
 
-                return lastWeekLogs.ToString();
+                return recentLogs.ToString();
             }
             catch (Exception ex)
             {
