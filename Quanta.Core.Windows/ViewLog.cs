@@ -308,12 +308,12 @@ namespace Quanta.Core.Windows
         {
             try
             {
-                // Get the activity tracker guide filename from config
-                string guideFilename = _config.GetValue<string>("activityTrackerGuideFilename");
+                // Get the AI time report guide filename from config
+                string guideFilename = _config.GetValue<string>("aiTimeReportGuide");
 
                 if (string.IsNullOrWhiteSpace(guideFilename))
                 {
-                    label1.Text = "Activity tracker guide filename not configured in appsettings.json";
+                    label1.Text = "AI time report guide filename not configured in appsettings.json";
                     return;
                 }
 
@@ -325,7 +325,7 @@ namespace Quanta.Core.Windows
                 }
                 else
                 {
-                    label1.Text = $"Activity tracker guide file not found: {guideFilename}";
+                    label1.Text = $"AI time report guide file not found: {guideFilename}";
                     return;
                 }
 
@@ -334,7 +334,7 @@ namespace Quanta.Core.Windows
 
                 // Combine the content
                 StringBuilder markdownContent = new StringBuilder();
-                markdownContent.AppendLine("Convert the log entries at the end of this file under 'Log Etries - Last Weel' to the format as described in the # Activity Tracker and Time Entry guide.");
+                markdownContent.AppendLine("Convert the log entries at the end of this file under 'Log Etries - Last Weel' to the format as described in the # AI Time Report guide.");
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine(guideContent);
                 markdownContent.AppendLine();
@@ -353,7 +353,7 @@ namespace Quanta.Core.Windows
                 {
                     saveDialog.Filter = "Markdown files (*.md)|*.md|All files (*.*)|*.*";
                     saveDialog.DefaultExt = "md";
-                    saveDialog.FileName = $"activity-tracker-{DateTime.Now:yyyy-MM-dd}.md";
+                    saveDialog.FileName = $"time-report-{DateTime.Now:yyyy-MM-dd}.md";
                     saveDialog.InitialDirectory = Path.GetDirectoryName(guideFilename);
 
                     if (saveDialog.ShowDialog() == DialogResult.OK)
