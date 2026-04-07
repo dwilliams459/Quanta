@@ -10,14 +10,10 @@ namespace Quanta.Core.Service
 {
     public class LogService : BaseService
     {
-        private IConfiguration? _config;
-
-        public LogService()
-        {
-            _config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json").Build();
-        }
-
+        /// <summary>
+        /// Reads the configured log file, creating it first when it does not already exist.
+        /// </summary>
+        /// <returns>The full text contents of the configured log file.</returns>
         public string ReadLog()
         {
             var logFileName = _config.GetValue<string>("logFilename");
@@ -27,6 +23,11 @@ namespace Quanta.Core.Service
             return logText;
         }
 
+        /// <summary>
+        /// Extracts distinct project labels from raw log text based on the expected timestamp-prefixed line format.
+        /// </summary>
+        /// <param name="text">The raw log text to scan for project names.</param>
+        /// <returns>A distinct list of project names found in the supplied log text.</returns>
         public List<string> ExtractProjects(string text)
         {
             List<string> wordsWithColon = new List<string>();
@@ -44,6 +45,10 @@ namespace Quanta.Core.Service
             return wordsWithColon.Distinct().ToList();
         }
 
+        /// <summary>
+        /// Parses the log file contents and extracts task entries that use the expected <c>TD:</c> marker format.
+        /// </summary>
+        /// <returns>A list of parsed <see cref="LogTask"/> entries from the log file.</returns>
         public List<LogTask> GetLogTasks()
         {
             var logText = ReadLog();
