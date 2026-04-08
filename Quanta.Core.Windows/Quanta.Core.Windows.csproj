@@ -67,6 +67,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="README.MD">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="userstories.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
