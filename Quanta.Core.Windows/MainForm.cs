@@ -444,6 +444,24 @@ namespace Quanta.Core.Windows
             }
         }
 
+        public void ShowAddAccomplishment()
+        {
+            try
+            {
+                var accomplishmentForm = new AddAccomplishment()
+                {
+                    TopMost = true,
+                    StartPosition = FormStartPosition.CenterScreen
+                };
+
+                accomplishmentForm.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception showing accomplishment form: " + ex.Message);
+            }
+        }
+
         public void ShowAddAlert()
         {
             try
@@ -701,6 +719,7 @@ namespace Quanta.Core.Windows
 
         private void logToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ShowLogText();
         }
 
         private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
@@ -923,6 +942,11 @@ namespace Quanta.Core.Windows
             addAlert.Show();
         }
 
+        private void addAccomplishmentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowAddAccomplishment();
+        }
+
         private void toolStripTextBox1_Click(object sender, EventArgs e)
         {
         }
@@ -959,5 +983,6 @@ namespace Quanta.Core.Windows
         }
     }
 }
+
 
 
