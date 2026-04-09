@@ -3,6 +3,7 @@ using Quanta.Core.Domain;
 using Quanta.Core.Service;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -112,15 +113,24 @@ namespace Quanta.Core.Windows
 
         private void OpenFileInVSCode(string filePath)
         {
-            var processStartInfo = new ProcessStartInfo
+            try
             {
-                FileName = $"\"C:\\Users\\david.williams1\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\" ",
-                Arguments = $"\"{_config.GetValue<string>("userstoriesfilename")}\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            Process.Start(processStartInfo);
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "code",
+                    Arguments = $"\"{filePath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+            }
+            catch (Win32Exception)
+            {
+                MessageBox.Show(
+                    "VS Code was not found. Ensure the 'code' command is installed and available on your PATH.",
+                    "VS Code Not Found",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
         }
     }
-}
+} 

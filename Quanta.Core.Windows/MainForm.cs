@@ -862,6 +862,8 @@ namespace Quanta.Core.Windows
         }
         private void iconContextMenu_Opening(object sender, CancelEventArgs e)
         {
+            var accomplishmentsFilename = config.GetValue<string>("accomplishmentsFilename", string.Empty);
+            addAccomplishmentToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(accomplishmentsFilename);
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
