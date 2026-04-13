@@ -193,21 +193,6 @@ namespace Quanta.Core.Windows
                     }
                 }
 
-
-                //var ctrlScrollLock = Keys.Control | Keys.Scroll;
-                //try
-                //{
-                //    HotkeyManager.Current.AddOrReplace("TestCtrlScrollLock", ctrlScrollLock, (s, e) => { });
-                //    HotkeyManager.Current.Remove("TestCtrlScrollLock");
-                //    volumeHotKey = ctrlScrollLock;
-                //}
-                //catch
-                //{
-                //    // If not available, fallback to Shift+PrintScreen
-                //    alertHotKey = Keys.Shift | Keys.PrintScreen;
-                //}
-
-
                 // Register hotkeys
                 RegisterHotkeys();
 
@@ -860,16 +845,31 @@ namespace Quanta.Core.Windows
             icon.BalloonTipIcon = toolTipIcon;
             icon.ShowBalloonTip(3000);
         }
+
         private void iconContextMenu_Opening(object sender, CancelEventArgs e)
         {
+            // Show Add Accomplishment only when a config path is provided.
+            // appsettings.json value: "accomplishmentsFilename": "c:/quanta/accomplishments.json",
             var accomplishmentsFilename = config.GetValue<string>("accomplishmentsFilename", string.Empty);
-            addAccomplishmentToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(accomplishmentsFilename);
+            var hasAccomplishments = !string.IsNullOrWhiteSpace(accomplishmentsFilename);
+            addAccomplishmentToolStripMenuItem.Visible = hasAccomplishments;
 
+            // Show Sprint Schedule only when a config path is provided.
+            // appsettings.json value: "sprintsfilename": "c:/quanta/sprints.json",
             var sprintsFilename = config.GetValue<string>("sprintsfilename", string.Empty);
-            sprintScheduleToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(sprintsFilename);
+            var hasSprints = !string.IsNullOrWhiteSpace(sprintsFilename);
+            sprintScheduleToolStripMenuItem.Visible = hasSprints;
 
+            // Show User Stories only when a config path is provided.
+            // appsettings.json value: "userstoriesfilename": "c:/quanta/userstories.json",
             var userStoriesFilename = config.GetValue<string>("userstoriesfilename", string.Empty);
-            viewUserStoriesToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(userStoriesFilename);
+            var hasUserStories = !string.IsNullOrWhiteSpace(userStoriesFilename);
+            viewUserStoriesToolStripMenuItem.Visible = hasUserStories;
+
+            // Hide this separator when all optional items are hidden,
+            // preventing adjacent separator lines in the context menu.
+            var hasOptionalItemsVisible = hasAccomplishments || hasSprints || hasUserStories;
+            toolStripSeparator1.Visible = hasOptionalItemsVisible;
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -991,6 +991,7 @@ namespace Quanta.Core.Windows
         }
     }
 }
+
 
 
 

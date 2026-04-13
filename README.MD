@@ -341,7 +341,6 @@ Contributions welcome! Please:
 - [ ] Export log to CSV/Markdown
 - [ ] Optional sound for alert notifications
 - [ ] Portable mode (store files in app folder)
-- [ ] Dark mode for forms
 
 **Never adding:**
 - ❌ Cloud features

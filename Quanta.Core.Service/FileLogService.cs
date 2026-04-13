@@ -18,14 +18,12 @@ namespace Quanta.Core.Domain
             var csvOutfilePath = _config.GetValue<string>("logFilename");
         }
 
+        /// <summary>
+        /// Logs an event to the file specified in the configuration.
+        /// </summary>
+        /// <returns></returns>
         public async Task LogEvent(string description, string userStoryId = "", string length = "")
         {
-            if (_config.GetValue<string>("logFormat") == "csv")
-            {
-                await LogEventCSV(description, userStoryId, length);
-                return;
-            }
-
             var dateNow = DateTime.Now.ToString("MM/dd/yy HH:mm");
 
             var logfile = _config.GetValue<string>("logFilename");
@@ -40,25 +38,6 @@ namespace Quanta.Core.Domain
             }
 
             await File.AppendAllTextAsync(logfile, $"{text}");
-        }
-
-        public async Task LogEventCSV(string description, string userStoryId = "", string length = "")
-        {
-            var dateNow = DateTime.Now.ToString("MM/dd/yy");
-
-            var logfile = _config.GetValue<string>("logFilename");
-
-            var text = $"{dateNow},{userStoryId},{length},{description}{System.Environment.NewLine}";
-
-            if (!File.Exists(logfile))
-            {
-                var path = Path.GetDirectoryName(logfile);
-                System.IO.Directory.CreateDirectory(path);
-                await System.IO.File.AppendAllTextAsync(logfile, $"Date,UserStory,Length,Description");
-            }
-
-            await File.AppendAllTextAsync(logfile, text);
-            Console.WriteLine($"Logged: {dateNow} text");
         }
     }
 }

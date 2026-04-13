@@ -317,6 +317,7 @@ namespace Quanta.Core.Windows
         {
             try
             {
+                // appsettings.json optional entry like: "aiTimeReportGuide": "C:\\path\\to\\guide.md"
                 string guideFilename = _config.GetValue<string>("aiTimeReportGuide");
 
                 if (string.IsNullOrWhiteSpace(guideFilename))
