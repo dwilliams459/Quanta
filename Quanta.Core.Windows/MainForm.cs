@@ -864,6 +864,12 @@ namespace Quanta.Core.Windows
         {
             var accomplishmentsFilename = config.GetValue<string>("accomplishmentsFilename", string.Empty);
             addAccomplishmentToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(accomplishmentsFilename);
+
+            var sprintsFilename = config.GetValue<string>("sprintsfilename", string.Empty);
+            sprintScheduleToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(sprintsFilename);
+
+            var userStoriesFilename = config.GetValue<string>("userstoriesfilename", string.Empty);
+            viewUserStoriesToolStripMenuItem.Visible = !string.IsNullOrWhiteSpace(userStoriesFilename);
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -985,6 +991,7 @@ namespace Quanta.Core.Windows
         }
     }
 }
+
 
 
 
