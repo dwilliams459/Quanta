@@ -39,6 +39,7 @@ namespace Quanta.Core.Windows
             button3 = new System.Windows.Forms.Button();
             btnGenerateMarkdown = new System.Windows.Forms.Button();
             txtMarkdownDays = new System.Windows.Forms.TextBox();
+            chkIncludeEvents = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // button2
@@ -139,11 +140,23 @@ namespace Quanta.Core.Windows
             txtMarkdownDays.Text = "7";
             txtMarkdownDays.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // chkIncludeEvents
+            // 
+            chkIncludeEvents.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            chkIncludeEvents.AutoSize = true;
+            chkIncludeEvents.Location = new System.Drawing.Point(202, 645);
+            chkIncludeEvents.Name = "chkIncludeEvents";
+            chkIncludeEvents.Size = new System.Drawing.Size(102, 19);
+            chkIncludeEvents.TabIndex = 11;
+            chkIncludeEvents.Text = "Include events";
+            chkIncludeEvents.UseVisualStyleBackColor = true;
+            // 
             // ViewLog
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(717, 670);
+            Controls.Add(chkIncludeEvents);
             Controls.Add(txtMarkdownDays);
             Controls.Add(btnGenerateMarkdown);
             Controls.Add(button3);
@@ -170,5 +183,6 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button btnGenerateMarkdown;
         private System.Windows.Forms.TextBox txtMarkdownDays;
+        private System.Windows.Forms.CheckBox chkIncludeEvents;
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,14 @@ namespace Quanta.Core.Windows
     {
         private IConfigurationRoot _config;
         private LogService _logService;
+        private readonly AlertService _alertService;
         private string rawLogText;
+
+        private class MarkdownInputEntry
+        {
+            public DateTime Timestamp { get; set; }
+            public string Content { get; set; }
+        }
 
         public ViewLog()
         {
@@ -27,6 +35,7 @@ namespace Quanta.Core.Windows
             InitializeComponent();
 
             _logService = new LogService();
+            _alertService = new AlertService();
 
             PopulateLog();
             richTextBox1.SelectionStart = richTextBox1.Text.Length;
@@ -308,7 +317,6 @@ namespace Quanta.Core.Windows
         {
             try
             {
-                // Get the AI time report guide filename from config
                 string guideFilename = _config.GetValue<string>("aiTimeReportGuide");
 
                 if (string.IsNullOrWhiteSpace(guideFilename))
@@ -317,17 +325,13 @@ namespace Quanta.Core.Windows
                     return;
                 }
 
-                // Read the guide content if the file exists
-                string guideContent = "";
-                if (File.Exists(guideFilename))
-                {
-                    guideContent = File.ReadAllText(guideFilename);
-                }
-                else
+                if (!File.Exists(guideFilename))
                 {
                     label1.Text = $"AI time report guide file not found: {guideFilename}";
                     return;
                 }
+
+                string guideContent = File.ReadAllText(guideFilename);
 
                 if (!int.TryParse(txtMarkdownDays.Text.Trim(), out int daysToInclude) || daysToInclude <= 0)
                 {
@@ -336,26 +340,28 @@ namespace Quanta.Core.Windows
                     return;
                 }
 
-                // Get log entries from the requested number of days
-                string recentLogs = GetRecentLogs(daysToInclude);
+                bool includeEvents = chkIncludeEvents.Checked;
+                string recentItems = GetRecentItems(daysToInclude, includeEvents);
 
-                // Combine the content
                 StringBuilder markdownContent = new StringBuilder();
-                markdownContent.AppendLine($"Convert the log entries at the end of this file under 'Log Entries - Last {daysToInclude} Days' to the format as described in the # AI Time Report guide.");
+                markdownContent.AppendLine($"Convert the entries at the end of this file under 'Entries - Last {daysToInclude} Days' to the format as described in the # AI Time Report guide.");
+                if (includeEvents)
+                {
+                    markdownContent.AppendLine("The entries include both log items and calendar events intermingled in chronological order.");
+                }
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine(guideContent);
                 markdownContent.AppendLine();
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine();
-                markdownContent.AppendLine($"# Log Entries - Last {daysToInclude} Days");
-                markdownContent.AppendLine("Convert the following log entries to the format as described above.");
+                markdownContent.AppendLine($"# Entries - Last {daysToInclude} Days");
+                markdownContent.AppendLine("Convert the following entries to the format as described above.");
                 markdownContent.AppendLine();
                 markdownContent.AppendLine("```");
-                markdownContent.AppendLine(recentLogs);
+                markdownContent.AppendLine(recentItems);
                 markdownContent.AppendLine("```");
-                markdownContent.AppendLine("Convert the previous log entries to the format as described above.");
+                markdownContent.AppendLine("Convert the previous entries to the format as described above.");
 
-                // Prompt user for save location
                 using (SaveFileDialog saveDialog = new SaveFileDialog())
                 {
                     saveDialog.Filter = "Markdown files (*.md)|*.md|All files (*.*)|*.*";
@@ -378,56 +384,162 @@ namespace Quanta.Core.Windows
             }
         }
 
-        private string GetRecentLogs(int daysToInclude)
+        private string GetRecentItems(int daysToInclude, bool includeEvents)
         {
             try
             {
-                // RichTextBox uses \v as line separator, replace it with \r\n
-                string logText = richTextBox1.Text.Replace("\v", "\r\n");
-            DateTime cutoffDate = DateTime.Now.AddDays(-daysToInclude);
+                DateTime cutoffDate = DateTime.Now.AddDays(-daysToInclude);
+                DateTime now = DateTime.Now;
 
-            StringBuilder recentLogs = new StringBuilder();
-                string[] lines = logText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                var entries = GetRecentLogEntries(cutoffDate);
 
-                foreach (string line in lines)
+                if (includeEvents)
                 {
-                    if (line.Length >= 14)
-                    {
-                        string dateString = line.Substring(0, 14);
-                        if (DateTime.TryParseExact(dateString, "MM/dd/yy HH:mm", null, 
-                            System.Globalization.DateTimeStyles.None, out DateTime entryDate))
-                        {
-                            if (entryDate >= cutoffDate)
-                            {
-                                recentLogs.AppendLine(line);
-                            }
-                        }
-                        else
-                        {
-                            // Include lines without valid dates if we're already collecting recent data
-                            if (recentLogs.Length > 0)
-                            {
-                                recentLogs.AppendLine(line);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Include short lines if we're already collecting recent data
-                        if (recentLogs.Length > 0)
-                        {
-                            recentLogs.AppendLine(line);
-                        }
-                    }
+                    entries.AddRange(GetRecentCalendarEventEntries(cutoffDate, now));
                 }
 
-                return recentLogs.ToString();
+                var ordered = entries
+                    .OrderBy(x => x.Timestamp)
+                    .ThenBy(x => x.Content, StringComparer.OrdinalIgnoreCase)
+                    .Select(x => x.Content);
+
+                return string.Join(Environment.NewLine, ordered);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error getting last week logs: {ex.Message}");
-                return richTextBox1.Text; // Return all logs if there's an error
+                Console.WriteLine($"Error getting recent entries: {ex.Message}");
+                return richTextBox1.Text;
             }
+        }
+
+        private List<MarkdownInputEntry> GetRecentLogEntries(DateTime cutoffDate)
+        {
+            var results = new List<MarkdownInputEntry>();
+            string logText = richTextBox1.Text.Replace("\v", "\r\n");
+            string[] lines = logText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            MarkdownInputEntry currentEntry = null;
+
+            foreach (string rawLine in lines)
+            {
+                string line = rawLine ?? string.Empty;
+
+                if (TryParseLogTimestamp(line, out DateTime entryDate))
+                {
+                    if (entryDate >= cutoffDate)
+                    {
+                        currentEntry = new MarkdownInputEntry
+                        {
+                            Timestamp = entryDate,
+                            Content = line.TrimEnd()
+                        };
+                        results.Add(currentEntry);
+                    }
+                    else
+                    {
+                        currentEntry = null;
+                    }
+                }
+                else if (currentEntry != null && !string.IsNullOrWhiteSpace(line))
+                {
+                    currentEntry.Content = $"{currentEntry.Content} {line.Trim()}";
+                }
+            }
+
+            return results;
+        }
+
+        private List<MarkdownInputEntry> GetRecentCalendarEventEntries(DateTime cutoffDate, DateTime now)
+        {
+            var results = new List<MarkdownInputEntry>();
+            var alerts = _alertService.GetAlerts() ?? new List<Alert>();
+
+            foreach (var alert in alerts)
+            {
+                if (alert == null || string.IsNullOrWhiteSpace(alert.Title))
+                {
+                    continue;
+                }
+
+                if (!alert.Repeat)
+                {
+                    if (alert.AlertDateTime >= cutoffDate && alert.AlertDateTime <= now)
+                    {
+                        results.Add(new MarkdownInputEntry
+                        {
+                            Timestamp = alert.AlertDateTime,
+                            Content = $"{alert.AlertDateTime:MM/dd/yy HH:mm}: {alert.Title.Trim()}"
+                        });
+                    }
+
+                    continue;
+                }
+
+                DateTime startDate = cutoffDate.Date;
+                if (alert.AlertDateTime.Date > startDate)
+                {
+                    startDate = alert.AlertDateTime.Date;
+                }
+
+                for (DateTime day = startDate; day <= now.Date; day = day.AddDays(1))
+                {
+                    if (!IsAlertOnDay(alert, day.DayOfWeek))
+                    {
+                        continue;
+                    }
+
+                    DateTime occurrence = day.Date.Add(alert.AlertDateTime.TimeOfDay);
+
+                    if (occurrence < cutoffDate || occurrence > now)
+                    {
+                        continue;
+                    }
+
+                    if (alert.AlertEndTime.HasValue && occurrence > alert.AlertEndTime.Value)
+                    {
+                        continue;
+                    }
+
+                    results.Add(new MarkdownInputEntry
+                    {
+                        Timestamp = occurrence,
+                        Content = $"{occurrence:MM/dd/yy HH:mm}: {alert.Title.Trim()}"
+                    });
+                }
+            }
+
+            return results;
+        }
+
+        private static bool TryParseLogTimestamp(string line, out DateTime entryDate)
+        {
+            entryDate = default;
+
+            if (string.IsNullOrWhiteSpace(line) || line.Length < 14)
+            {
+                return false;
+            }
+
+            string dateString = line.Substring(0, 14);
+            return DateTime.TryParseExact(
+                dateString,
+                "MM/dd/yy HH:mm",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out entryDate);
+        }
+
+        private static bool IsAlertOnDay(Alert alert, DayOfWeek day)
+        {
+            return day switch
+            {
+                DayOfWeek.Monday => alert.Monday == true,
+                DayOfWeek.Tuesday => alert.Tuesday == true,
+                DayOfWeek.Wednesday => alert.Wednesday == true,
+                DayOfWeek.Thursday => alert.Thursday == true,
+                DayOfWeek.Friday => alert.Friday == true,
+                _ => false
+            };
         }
     }
 }
