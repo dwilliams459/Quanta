@@ -144,6 +144,8 @@ namespace Quanta.Core.Windows
             // 
             chkIncludeEvents.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             chkIncludeEvents.AutoSize = true;
+            chkIncludeEvents.Checked = true;
+            chkIncludeEvents.CheckState = System.Windows.Forms.CheckState.Checked;
             chkIncludeEvents.Location = new System.Drawing.Point(202, 645);
             chkIncludeEvents.Name = "chkIncludeEvents";
             chkIncludeEvents.Size = new System.Drawing.Size(102, 19);

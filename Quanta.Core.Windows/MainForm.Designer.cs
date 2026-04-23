@@ -41,11 +41,11 @@ namespace Quanta.Core.Windows
             viewLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            addAccomplishmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewAlertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             syncAlertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewOnlyAlerts = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            addAccomplishmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             sprintScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewUserStoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -100,14 +100,14 @@ namespace Quanta.Core.Windows
             // 
             iconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { hotkeyToolStripMenuItem, toolStripSeparator3, logToolStripMenuItem, viewLogToolStripMenuItem, toolStripSeparator2, toolStripMenuItem3, viewAlertsToolStripMenuItem, syncAlertsToolStripMenuItem, viewOnlyAlerts, toolStripSeparator1, addAccomplishmentToolStripMenuItem, sprintScheduleToolStripMenuItem, viewUserStoriesToolStripMenuItem, toolStripSeparator4, exitToolStripMenuItem });
             iconContextMenu.Name = "iconContextMenu";
-            iconContextMenu.Size = new System.Drawing.Size(191, 292);
+            iconContextMenu.Size = new System.Drawing.Size(191, 270);
             iconContextMenu.Opening += iconContextMenu_Opening;
             // 
             // hotkeyToolStripMenuItem
             // 
             hotkeyToolStripMenuItem.Name = "hotkeyToolStripMenuItem";
             hotkeyToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            hotkeyToolStripMenuItem.Text = "Hotkey";
+            hotkeyToolStripMenuItem.Text = "Settings..";
             hotkeyToolStripMenuItem.Click += hotkeyToolStripMenuItem_Click;
             // 
             // toolStripSeparator3
@@ -142,13 +142,6 @@ namespace Quanta.Core.Windows
             toolStripMenuItem3.Text = "Add Alert";
             toolStripMenuItem3.Click += toolStripMenuItem3_Click;
             // 
-            // addAccomplishmentToolStripMenuItem
-            // 
-            addAccomplishmentToolStripMenuItem.Name = "addAccomplishmentToolStripMenuItem";
-            addAccomplishmentToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            addAccomplishmentToolStripMenuItem.Text = "Add Accomplishment";
-            addAccomplishmentToolStripMenuItem.Click += addAccomplishmentToolStripMenuItem_Click;
-            // 
             // viewAlertsToolStripMenuItem
             // 
             viewAlertsToolStripMenuItem.BackColor = System.Drawing.Color.Linen;
@@ -175,6 +168,13 @@ namespace Quanta.Core.Windows
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+            // 
+            // addAccomplishmentToolStripMenuItem
+            // 
+            addAccomplishmentToolStripMenuItem.Name = "addAccomplishmentToolStripMenuItem";
+            addAccomplishmentToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            addAccomplishmentToolStripMenuItem.Text = "Add Accomplishment";
+            addAccomplishmentToolStripMenuItem.Click += addAccomplishmentToolStripMenuItem_Click;
             // 
             // sprintScheduleToolStripMenuItem
             // 
@@ -331,7 +331,7 @@ namespace Quanta.Core.Windows
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
-            Text = "MainForm";
+            Text = "Settings";
             FormClosing += MainForm_FormClosing;
             Load += MainForm_Load;
             iconContextMenu.ResumeLayout(false);

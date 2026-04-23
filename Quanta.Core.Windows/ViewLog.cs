@@ -345,18 +345,12 @@ namespace Quanta.Core.Windows
                 string recentItems = GetRecentItems(daysToInclude, includeEvents);
 
                 StringBuilder markdownContent = new StringBuilder();
-                markdownContent.AppendLine($"Convert the entries at the end of this file under 'Entries - Last {daysToInclude} Days' to the format as described in the # AI Time Report guide.");
-                if (includeEvents)
-                {
-                    markdownContent.AppendLine("The entries include both log items and calendar events intermingled in chronological order.");
-                }
-                markdownContent.AppendLine("---");
+
                 markdownContent.AppendLine(guideContent);
                 markdownContent.AppendLine();
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine();
-                markdownContent.AppendLine($"# Entries - Last {daysToInclude} Days");
-                markdownContent.AppendLine("Convert the following entries to the format as described above.");
+                markdownContent.AppendLine($"# Log Entries - Last {daysToInclude} Days");
                 markdownContent.AppendLine();
                 markdownContent.AppendLine("```");
                 markdownContent.AppendLine(recentItems);
@@ -462,6 +456,11 @@ namespace Quanta.Core.Windows
                     continue;
                 }
 
+                if (!IsProjectAssociatedAlertTitle(alert.Title))
+                {
+                    continue;
+                }
+
                 if (!alert.Repeat)
                 {
                     if (alert.AlertDateTime >= cutoffDate && alert.AlertDateTime <= now)
@@ -541,6 +540,12 @@ namespace Quanta.Core.Windows
                 DayOfWeek.Friday => alert.Friday == true,
                 _ => false
             };
+        }
+
+        private static bool IsProjectAssociatedAlertTitle(string title)
+        {
+            string trimmedTitle = title?.Trim();
+            return !string.IsNullOrEmpty(trimmedTitle) && Regex.IsMatch(trimmedTitle, @"^[^:\s][^:]*:");
         }
     }
 }

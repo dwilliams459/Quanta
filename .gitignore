@@ -494,3 +494,6 @@ TestResult.xml
 nunit-*.xml
 Quanta.Core.Windows/activity-tracker-report-guide.md
 /Quanta.Core.Windows/activity-tracker-report-guide.md
+
+# Other
+.dotnet/
