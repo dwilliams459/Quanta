@@ -18,6 +18,7 @@ namespace Quanta.Core.Windows
         private readonly SyncService syncService = new SyncService();
         private readonly string alertsFilePath;
         private readonly bool syncEnabled;
+        private bool _hasUnsavedChanges = false;
 
         public ViewAlerts()
         {
@@ -34,10 +35,12 @@ namespace Quanta.Core.Windows
             {
                 dataGridView1.CellContentClick += DataGridView_CellContentClick;
                 dataGridView1.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
+                dataGridView1.CellEndEdit += DataGridView_CellEndEdit;
 
                 LoadCalendarEvents();
                 ApplySyncVisibility();
                 RefreshSyncStatusLabel();
+                _hasUnsavedChanges = false;
 
                 newEventTimeMin.Text = DateTime.Now.Minute.ToString();
                 newEventTimeHour.Text = ((DateTime.Now.Hour + 11) % 12 + 1).ToString();
@@ -51,15 +54,18 @@ namespace Quanta.Core.Windows
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show(
-                "Do you want to save changes before closing?",
-                "Save Changes",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
+            if (_hasUnsavedChanges)
             {
-                button2_Click(null, null);
+                DialogResult result = MessageBox.Show(
+                    "Do you want to save changes before closing?",
+                    "Save Changes",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    button2_Click(null, null);
+                }
             }
 
             Close();
@@ -79,6 +85,7 @@ namespace Quanta.Core.Windows
                 label1.Text = string.Empty;
 
                 alertService.WriteAlertsToFile(alerts);
+                _hasUnsavedChanges = false;
 
                 if (syncEnabled)
                 {
@@ -236,6 +243,7 @@ namespace Quanta.Core.Windows
         {
             Alert newEvent = new Alert();
             alerts.Add(newEvent);
+            _hasUnsavedChanges = true;
 
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = alerts;
@@ -247,6 +255,7 @@ namespace Quanta.Core.Windows
             {
                 Alert selectedEvent = (Alert)dataGridView1.Rows[e.RowIndex].DataBoundItem;
                 alerts.Remove(selectedEvent);
+                _hasUnsavedChanges = true;
 
                 dataGridView1.DataSource = null;
                 dataGridView1.DataSource = alerts;
@@ -284,6 +293,7 @@ namespace Quanta.Core.Windows
             newEvent.AlertDateTime = newEventDateTime;
             newEvent.Title = txtNewEventDescription.Text;
             alerts.Add(newEvent);
+            _hasUnsavedChanges = true;
 
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = alerts;
@@ -291,6 +301,11 @@ namespace Quanta.Core.Windows
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
+        }
+
+        private void DataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            _hasUnsavedChanges = true;
         }
 
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -303,9 +318,26 @@ namespace Quanta.Core.Windows
             {
                 if (e.Value != null && DateTime.TryParse(e.Value.ToString(), out DateTime alertDateTime))
                 {
-                    e.CellStyle.BackColor = alertDateTime.Date == DateTime.Today
-                        ? ColorTranslator.FromHtml("#fff4c2")
-                        : Color.White;
+                    // Keep today's events in yellow
+                    if (alertDateTime.Date == DateTime.Today)
+                    {
+                        e.CellStyle.BackColor = ColorTranslator.FromHtml("#fff4c2");
+                    }
+                    else
+                    {
+                        // Color by day of week - light shades
+                        e.CellStyle.BackColor = alertDateTime.DayOfWeek switch
+                        {
+                            DayOfWeek.Sunday => ColorTranslator.FromHtml("#FFE4E1"),    // Light pink
+                            DayOfWeek.Monday => ColorTranslator.FromHtml("#E4E4FF"),    // Very light purple/pink
+                            DayOfWeek.Tuesday => ColorTranslator.FromHtml("#E0FFE0"),   // Light green
+                            DayOfWeek.Wednesday => ColorTranslator.FromHtml("#E0F0FF"), // Light blue
+                            DayOfWeek.Thursday => ColorTranslator.FromHtml("#F5F5DC"),  // Beige
+                            DayOfWeek.Friday => ColorTranslator.FromHtml("#FFE4B5"),    // Light orange
+                            DayOfWeek.Saturday => ColorTranslator.FromHtml("#F0E6FF"),  // Light purple
+                            _ => Color.White
+                        };
+                    }
                 }
             }
         }
