@@ -51,6 +51,17 @@ namespace Quanta.Core.Windows
 
         private void button1_Click(object sender, EventArgs e)
         {
+            DialogResult result = MessageBox.Show(
+                "Do you want to save changes before closing?",
+                "Save Changes",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                button2_Click(null, null);
+            }
+
             Close();
         }
 
@@ -67,21 +78,17 @@ namespace Quanta.Core.Windows
             {
                 label1.Text = string.Empty;
 
-                DialogResult dialogResult = MessageBox.Show("Save Alerts?", "Save Alerts", MessageBoxButtons.OKCancel);
-                if (dialogResult == DialogResult.OK)
-                {
-                    alertService.WriteAlertsToFile(alerts);
+                alertService.WriteAlertsToFile(alerts);
 
-                    if (syncEnabled)
+                if (syncEnabled)
+                {
+                    if (syncService.CanPush())
                     {
-                        if (syncService.CanPush())
-                        {
-                            HandlePushResult(syncService.PushToRemote(alertsFilePath));
-                        }
-                        else
-                        {
-                            labelSyncStatus.Text = "Saved locally only";
-                        }
+                        HandlePushResult(syncService.PushToRemote(alertsFilePath));
+                    }
+                    else
+                    {
+                        labelSyncStatus.Text = "Saved locally only";
                     }
                 }
 
@@ -90,6 +97,7 @@ namespace Quanta.Core.Windows
                     MainForm.Instance.Alerts = alertService.GetAlerts();
                 }
 
+                labelLastSaved.Text = $"Last saved: {DateTime.Now:g}";
                 LoadCalendarEvents();
             }
             catch (Exception ex)

@@ -287,11 +287,22 @@ namespace Quanta.Core.Windows
             labelSyncStatus.Text = "Never synced";
             labelSyncStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // labelLastSaved
+            // 
+            labelLastSaved = new System.Windows.Forms.Label();
+            labelLastSaved.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            labelLastSaved.AutoSize = true;
+            labelLastSaved.Location = new System.Drawing.Point(12, 432);
+            labelLastSaved.Name = "labelLastSaved";
+            labelLastSaved.Size = new System.Drawing.Size(0, 15);
+            labelLastSaved.TabIndex = 21;
+            // 
             // ViewAlerts
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(827, 461);
+            Controls.Add(labelLastSaved);
             Controls.Add(buttonSync);
             Controls.Add(dataGridView1);
             Controls.Add(button3);
@@ -341,5 +352,6 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.DataGridViewButtonColumn Delete;
         private System.Windows.Forms.Button buttonSync;
         private System.Windows.Forms.Label labelSyncStatus;
+        private System.Windows.Forms.Label labelLastSaved;
     }
 }

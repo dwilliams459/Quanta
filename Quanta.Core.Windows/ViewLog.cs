@@ -20,6 +20,7 @@ namespace Quanta.Core.Windows
         private LogService _logService;
         private readonly AlertService _alertService;
         private string rawLogText;
+        private bool _hasUnsavedChanges = false;
 
         private class MarkdownInputEntry
         {
@@ -40,6 +41,7 @@ namespace Quanta.Core.Windows
             PopulateLog();
             richTextBox1.SelectionStart = richTextBox1.Text.Length;
             richTextBox1.ScrollToCaret();
+            richTextBox1.TextChanged += RichTextBox1_TextChanged;
         }
 
         private void PopulateLog(string logText = "")
@@ -195,7 +197,28 @@ namespace Quanta.Core.Windows
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (_hasUnsavedChanges)
+            {
+                DialogResult result = MessageBox.Show(
+                    "You have unsaved changes. Do you want to save before closing?",
+                    "Unsaved Changes",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    button2_Click(null, null);
+                    this.Close();
+                }
+                else if (result == DialogResult.No)
+                {
+                    this.Close();
+                }
+            }
+            else
+            {
+                this.Close();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -210,6 +233,7 @@ namespace Quanta.Core.Windows
                 {
                     string plainText = richTextBox1.Text.Replace("\v", "\r\n");
                     File.WriteAllText(_config.GetValue<string>("logFilename"), plainText);
+                    _hasUnsavedChanges = false;
                     PopulateLog(); // Refresh the log display
                     richTextBox1.SelectionStart = richTextBox1.Text.Length;
                     richTextBox1.ScrollToCaret();
@@ -311,6 +335,11 @@ namespace Quanta.Core.Windows
                 richTextBox1.SelectionStart = richTextBox1.Text.Length;
                 richTextBox1.ScrollToCaret();
             }
+        }
+
+        private void RichTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            _hasUnsavedChanges = true;
         }
 
         private void btnGenerateMarkdown_Click(object sender, EventArgs e)
