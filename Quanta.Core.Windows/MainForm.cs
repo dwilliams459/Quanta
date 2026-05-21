@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +56,7 @@ namespace Quanta.Core.Windows
 
         private readonly IConfigurationRoot config;
         private readonly SyncService syncService = new SyncService();
+        private readonly CalendarImportService calendarImportService = new CalendarImportService();
         private readonly string alertsFilePath;
         private readonly bool syncEnabled;
 
@@ -765,6 +767,41 @@ namespace Quanta.Core.Windows
         {
             var viewAlertsForm = new ViewAlerts();
             viewAlertsForm.Show();
+        }
+
+        private void importIcsFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using var openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Calendar files (*.ics;*.iws)|*.ics;*.iws|All files (*.*)|*.*",
+                    Title = "Import Calendar File"
+                };
+
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                var importedAlerts = calendarImportService.ImportCalendarFile(openFileDialog.FileName, alertsFilePath);
+                Alerts = AlertService.GetAlerts();
+
+                var importedCount = importedAlerts.Count;
+                var fileName = Path.GetFileName(openFileDialog.FileName);
+                MessageBox.Show(
+                    this,
+                    importedCount == 0
+                        ? $"No alerts were imported from {fileName}."
+                        : $"Imported {importedCount} alert(s) from {fileName}.",
+                    "Calendar Import",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Calendar Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void SetupHourlySyncTimer()

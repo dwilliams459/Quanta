@@ -29,7 +29,19 @@ namespace Quanta.Core.Service
             var calendar = Calendar.Load(calendarText);
 
             return calendar.Events
+                .Where(IsImportableEvent)
                 .SelectMany(MapEventToAlerts)
+                .DistinctBy(x => new
+                {
+                    Title = x.Title?.Trim(),
+                    x.AlertDateTime,
+                    x.AlertEndTime,
+                    x.Monday,
+                    x.Tuesday,
+                    x.Wednesday,
+                    x.Thursday,
+                    x.Friday
+                })
                 .OrderBy(x => x.NextEventDate ?? x.AlertDateTime)
                 .ThenBy(x => x.Title)
                 .ToList();
@@ -45,6 +57,7 @@ namespace Quanta.Core.Service
             }
 
             var alerts = append ? _alertService.GetAlerts(alertsFilePath) : new List<Alert>();
+            var addedAlerts = new List<Alert>();
 
             foreach (var importedAlert in importedAlerts)
             {
@@ -54,10 +67,11 @@ namespace Quanta.Core.Service
                 }
 
                 alerts.Add(importedAlert);
+                addedAlerts.Add(importedAlert);
             }
 
             _alertService.WriteAlertsToFile(alerts, alertsFilePath);
-            return importedAlerts;
+            return addedAlerts;
         }
 
         private static IEnumerable<Alert> MapEventToAlerts(CalendarEvent calendarEvent)
@@ -105,6 +119,14 @@ namespace Quanta.Core.Service
             };
         }
 
+        private static bool IsImportableEvent(CalendarEvent calendarEvent)
+        {
+            return calendarEvent != null
+                && calendarEvent.DtStart != null
+                && (!string.IsNullOrWhiteSpace(calendarEvent.Summary)
+                    || !string.IsNullOrWhiteSpace(calendarEvent.Description));
+        }
+
         private static string GetAlertTitle(CalendarEvent calendarEvent)
         {
             if (!string.IsNullOrWhiteSpace(calendarEvent.Summary))
@@ -117,7 +139,7 @@ namespace Quanta.Core.Service
                 return calendarEvent.Description.Trim();
             }
 
-            return "Calendar Event";
+            return string.Empty;
         }
 
         private static DateTime NormalizeDateTime(IDateTime calDateTime)

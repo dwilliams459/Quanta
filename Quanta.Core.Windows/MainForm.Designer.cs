@@ -42,6 +42,7 @@ namespace Quanta.Core.Windows
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             viewAlertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            importIcsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             syncAlertsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewOnlyAlerts = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -98,9 +99,9 @@ namespace Quanta.Core.Windows
             // 
             // iconContextMenu
             // 
-            iconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { hotkeyToolStripMenuItem, toolStripSeparator3, logToolStripMenuItem, viewLogToolStripMenuItem, toolStripSeparator2, toolStripMenuItem3, viewAlertsToolStripMenuItem, syncAlertsToolStripMenuItem, viewOnlyAlerts, toolStripSeparator1, addAccomplishmentToolStripMenuItem, sprintScheduleToolStripMenuItem, viewUserStoriesToolStripMenuItem, toolStripSeparator4, exitToolStripMenuItem });
+            iconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { hotkeyToolStripMenuItem, toolStripSeparator3, logToolStripMenuItem, viewLogToolStripMenuItem, toolStripSeparator2, toolStripMenuItem3, viewAlertsToolStripMenuItem, importIcsFileToolStripMenuItem, syncAlertsToolStripMenuItem, viewOnlyAlerts, toolStripSeparator1, addAccomplishmentToolStripMenuItem, sprintScheduleToolStripMenuItem, viewUserStoriesToolStripMenuItem, toolStripSeparator4, exitToolStripMenuItem });
             iconContextMenu.Name = "iconContextMenu";
-            iconContextMenu.Size = new System.Drawing.Size(191, 270);
+            iconContextMenu.Size = new System.Drawing.Size(191, 292);
             iconContextMenu.Opening += iconContextMenu_Opening;
             // 
             // hotkeyToolStripMenuItem
@@ -149,6 +150,13 @@ namespace Quanta.Core.Windows
             viewAlertsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             viewAlertsToolStripMenuItem.Text = "Edit Alerts";
             viewAlertsToolStripMenuItem.Click += viewAlertsToolStripMenuItem_Click;
+            // 
+            // importIcsFileToolStripMenuItem
+            // 
+            importIcsFileToolStripMenuItem.Name = "importIcsFileToolStripMenuItem";
+            importIcsFileToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            importIcsFileToolStripMenuItem.Text = "Import .ics File...";
+            importIcsFileToolStripMenuItem.Click += importIcsFileToolStripMenuItem_Click;
             // 
             // syncAlertsToolStripMenuItem
             // 
@@ -353,6 +361,7 @@ namespace Quanta.Core.Windows
         public System.Windows.Forms.NotifyIcon icon;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripMenuItem viewAlertsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importIcsFileToolStripMenuItem;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ToolStripMenuItem syncAlertsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewOnlyAlerts;
