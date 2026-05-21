@@ -55,6 +55,8 @@ namespace Quanta.Core.Windows
             txtNewEventDescription = new System.Windows.Forms.TextBox();
             buttonSync = new System.Windows.Forms.Button();
             labelSyncStatus = new System.Windows.Forms.Label();
+            labelLastSaved = new System.Windows.Forms.Label();
+            button5 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)alertBindingSource).BeginInit();
             groupBox1.SuspendLayout();
@@ -289,7 +291,6 @@ namespace Quanta.Core.Windows
             // 
             // labelLastSaved
             // 
-            labelLastSaved = new System.Windows.Forms.Label();
             labelLastSaved.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             labelLastSaved.AutoSize = true;
             labelLastSaved.Location = new System.Drawing.Point(12, 432);
@@ -297,11 +298,23 @@ namespace Quanta.Core.Windows
             labelLastSaved.Size = new System.Drawing.Size(0, 15);
             labelLastSaved.TabIndex = 21;
             // 
+            // button5
+            // 
+            button5.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            button5.Location = new System.Drawing.Point(792, 11);
+            button5.Name = "button5";
+            button5.Size = new System.Drawing.Size(23, 23);
+            button5.TabIndex = 23;
+            button5.Text = "⟲";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
+            // 
             // ViewAlerts
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(827, 461);
+            Controls.Add(button5);
             Controls.Add(labelLastSaved);
             Controls.Add(buttonSync);
             Controls.Add(dataGridView1);
@@ -353,5 +366,7 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.Button buttonSync;
         private System.Windows.Forms.Label labelSyncStatus;
         private System.Windows.Forms.Label labelLastSaved;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button button5;
     }
 }

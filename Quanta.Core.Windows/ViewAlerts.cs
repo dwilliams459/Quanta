@@ -293,10 +293,12 @@ namespace Quanta.Core.Windows
             newEvent.AlertDateTime = newEventDateTime;
             newEvent.Title = txtNewEventDescription.Text;
             alerts.Add(newEvent);
+            alerts = alerts.OrderBy(x => x.NextEventDate).ToList();
             _hasUnsavedChanges = true;
 
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = alerts;
+            txtNewEventDescription.Text = string.Empty;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -371,6 +373,20 @@ namespace Quanta.Core.Windows
                 labelSyncStatus.Text = "Sync failed";
                 MessageBox.Show(ex.Message, "Sync Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            label1.Text = string.Empty;
+            LoadCalendarEvents();
+            _hasUnsavedChanges = false;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            label1.Text = string.Empty;
+            LoadCalendarEvents();
+            _hasUnsavedChanges = false;
         }
     }
 }

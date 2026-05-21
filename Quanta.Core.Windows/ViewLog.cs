@@ -19,6 +19,7 @@ namespace Quanta.Core.Windows
         private IConfigurationRoot _config;
         private LogService _logService;
         private readonly AlertService _alertService;
+        private readonly UserStoryService _userStoryService;
         private string rawLogText;
         private bool _hasUnsavedChanges = false;
 
@@ -37,6 +38,7 @@ namespace Quanta.Core.Windows
 
             _logService = new LogService();
             _alertService = new AlertService();
+            _userStoryService = new UserStoryService();
 
             PopulateLog();
             richTextBox1.SelectionStart = richTextBox1.Text.Length;
@@ -377,10 +379,25 @@ namespace Quanta.Core.Windows
 
                 markdownContent.AppendLine(guideContent);
                 markdownContent.AppendLine();
+
+                string userStoriesTable = BuildUserStoriesMarkdownTable();
+                if (!string.IsNullOrWhiteSpace(userStoriesTable))
+                {
+                    markdownContent.AppendLine("---");
+                    markdownContent.AppendLine();
+                    markdownContent.AppendLine("## User Stories");
+                    markdownContent.AppendLine();
+                    markdownContent.AppendLine(userStoriesTable);
+                    markdownContent.AppendLine();
+                }
+
+                markdownContent.AppendLine();
                 markdownContent.AppendLine("---");
                 markdownContent.AppendLine();
                 markdownContent.AppendLine($"# Log Entries - Last {daysToInclude} Days");
                 markdownContent.AppendLine();
+
+
                 markdownContent.AppendLine("```");
                 markdownContent.AppendLine(recentItems);
                 markdownContent.AppendLine("```");
@@ -434,6 +451,45 @@ namespace Quanta.Core.Windows
                 Console.WriteLine($"Error getting recent entries: {ex.Message}");
                 return richTextBox1.Text;
             }
+        }
+
+        private string BuildUserStoriesMarkdownTable()
+        {
+            string userStoriesFilename = _config.GetValue<string>("userstoriesfilename");
+            if (string.IsNullOrWhiteSpace(userStoriesFilename))
+            {
+                return string.Empty;
+            }
+
+            var userStories = _userStoryService.GetUserStories(userStoriesFilename)
+                .OrderBy(x => x.SprintId)
+                .ThenBy(x => x.Id)
+                .ToList();
+
+            StringBuilder table = new StringBuilder();
+            table.AppendLine("| User Story ID | Sprint | Description |");
+            table.AppendLine("| --- | --- | --- |");
+
+            foreach (var userStory in userStories)
+            {
+                table.AppendLine($"| {userStory.Id} | {EscapeMarkdownTableValue(userStory.SprintId)} | {EscapeMarkdownTableValue(userStory.Name)} |");
+            }
+
+            return table.ToString().TrimEnd();
+        }
+
+        private static string EscapeMarkdownTableValue(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            return value
+                .Replace("|", "\\|")
+                .Replace("\r", " ")
+                .Replace("\n", " ")
+                .Trim();
         }
 
         private List<MarkdownInputEntry> GetRecentLogEntries(DateTime cutoffDate)
