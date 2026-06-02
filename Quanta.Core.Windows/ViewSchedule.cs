@@ -82,7 +82,7 @@ namespace Quanta.Core.Windows
             {
                 var dummySchedules = new List<SprintSchedule>
                        {
-                           new SprintSchedule { Id = 1, Name = "Dummy Sprint", StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7) }
+                           new SprintSchedule { Id = 1, Name = "Dummy Sprint", StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), ReleaseDate = DateTime.Now.AddDays(14) }
                        };
                 File.WriteAllText(filePath, JsonConvert.SerializeObject(dummySchedules));
             }
@@ -138,7 +138,7 @@ namespace Quanta.Core.Windows
             {
                 // Get the file path from configuration
                 var filePath = _config.GetValue<string>("sprintsfilename");
-                
+
                 if (string.IsNullOrEmpty(filePath))
                 {
                     MessageBox.Show("Sprints file path not configured.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -174,6 +174,11 @@ namespace Quanta.Core.Windows
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
+        }
+
+        private void sprintScheduleBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

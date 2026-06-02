@@ -9,6 +9,7 @@ namespace Quanta.Core.Domain
         public DateTime? StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string ProjectName { get; set; }
+        public DateTime? ReleaseDate { get; set; }
 
         public int DaysRemaining
         {

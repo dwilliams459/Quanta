@@ -26,7 +26,7 @@ namespace Quanta.Core.Service
                 {
                     var dummySchedules = new List<SprintSchedule>
                         {
-                            new SprintSchedule { Id = 1, Name = "Dummy Sprint", StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7) }
+                            new SprintSchedule { Id = 1, Name = "Dummy Sprint", StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), ReleaseDate = DateTime.Now.AddDays(14) }
                         };
                     File.WriteAllText(filePath, JsonConvert.SerializeObject(dummySchedules));
                 }
