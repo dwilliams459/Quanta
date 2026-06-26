@@ -84,7 +84,7 @@ namespace Quanta.Core.Windows
             txtDescription.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
             txtDescription.Multiline = true;
             txtDescription.Name = "txtDescription";
-            txtDescription.Size = new System.Drawing.Size(776, 80);
+            txtDescription.Size = new System.Drawing.Size(652, 80);
             txtDescription.TabIndex = 1;
             txtDescription.TextChanged += txtDescription_TextChanged;
             txtDescription.KeyPress += textBox1_KeyPress;
@@ -95,11 +95,11 @@ namespace Quanta.Core.Windows
             txtLength.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             txtLength.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtLength.Font = new System.Drawing.Font("Segoe UI", 9F);
-            txtLength.Location = new System.Drawing.Point(783, 32);
+            txtLength.Location = new System.Drawing.Point(661, 32);
             txtLength.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
             txtLength.Name = "txtLength";
             txtLength.PlaceholderText = "Length";
-            txtLength.Size = new System.Drawing.Size(180, 23);
+            txtLength.Size = new System.Drawing.Size(302, 23);
             txtLength.TabIndex = 3;
             txtLength.TextChanged += txtLength_TextChanged;
             txtLength.KeyPress += txtLength_KeyPress;
@@ -110,11 +110,11 @@ namespace Quanta.Core.Windows
             txtUsId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             txtUsId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtUsId.Font = new System.Drawing.Font("Segoe UI", 9F);
-            txtUsId.Location = new System.Drawing.Point(783, 3);
+            txtUsId.Location = new System.Drawing.Point(661, 3);
             txtUsId.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
             txtUsId.Name = "txtUsId";
             txtUsId.PlaceholderText = "User Story";
-            txtUsId.Size = new System.Drawing.Size(180, 23);
+            txtUsId.Size = new System.Drawing.Size(302, 23);
             txtUsId.TabIndex = 2;
             txtUsId.KeyPress += txtUsId_KeyPress;
             // 
