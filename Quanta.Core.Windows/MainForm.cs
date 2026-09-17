@@ -25,12 +25,14 @@ namespace Quanta.Core.Windows
         private readonly string registryKeyName = "Hotkey";
 
         private readonly string addAlertKeyName = "AlertHotKey";
+        private readonly string addAccomplishmentKeyName = "AccomplishmentHotKey";
         private readonly string volumeHotKeyName = "VolumeHotKey";
         private readonly string volumePrintScreenHotKeyName = "VolumePrintScreenHotKey";
         private readonly string autoDisplayLogEnabledKey = "AutoDisplayLogEnabled";
         private readonly string autoDisplayLogMinuteKey = "AutoDisplayLogMinute";
         private Keys hotkey = Keys.None;
         private Keys alertHotKey = Keys.None;
+        private Keys accomplishmentHotKey = Keys.None;
         private Keys volumeHotKey = Keys.None;
         private Keys volumePrintScreenHotKey = Keys.None;
         private DateTime delayTimerUntil = DateTime.Now;
@@ -165,6 +167,20 @@ namespace Quanta.Core.Windows
                     }
                 }
 
+                // Get/Set Accomplishment hotkey (add accomplishment)
+                var addAccomplishmentHotkeyValue = registryKey.GetValue(addAccomplishmentKeyName);
+                if (addAccomplishmentHotkeyValue == null || string.IsNullOrEmpty(addAccomplishmentHotkeyValue.ToString()))
+                {
+                    accomplishmentHotKey = Keys.Alt | Keys.F10; // Default hotkey: Alt+F10
+                }
+                else
+                {
+                    if (Enum.TryParse(addAccomplishmentHotkeyValue.ToString(), out Keys parsedAccomplishmentHotkey))
+                    {
+                        accomplishmentHotKey = parsedAccomplishmentHotkey;
+                    }
+                }
+
                 // Get/Set Volume mute hotkey
                 var volumeHotkeyValue = registryKey.GetValue(volumeHotKeyName);
                 var ctrlScrollLock = Keys.Control | Keys.Scroll;
@@ -216,6 +232,7 @@ namespace Quanta.Core.Windows
                 {
                     HotkeyManager.Current.Remove("ShowLog");
                     HotkeyManager.Current.Remove("ShowAddAlert");
+                    HotkeyManager.Current.Remove("ShowAddAccomplishment");
                 }
                 catch { }
 
@@ -228,6 +245,11 @@ namespace Quanta.Core.Windows
                 if (alertHotKey != Keys.None)
                 {
                     HotkeyManager.Current.AddOrReplace("ShowAddAlert", alertHotKey, (sender, e) => ShowAddAlert());
+                }
+
+                if (accomplishmentHotKey != Keys.None)
+                {
+                    HotkeyManager.Current.AddOrReplace("ShowAddAccomplishment", accomplishmentHotKey, (sender, e) => ShowAddAccomplishment());
                 }
 
                 if (volumeHotKey != Keys.None)
@@ -255,6 +277,7 @@ namespace Quanta.Core.Windows
         {
             hotkeyTextBox.Text = hotkey == Keys.None ? "None" : hotkey.ToString();
             alertHotkeyTextBox.Text = alertHotKey == Keys.None ? "None" : alertHotKey.ToString();
+            accomplishmentHotkeyTextBox.Text = accomplishmentHotKey == Keys.None ? "None" : accomplishmentHotKey.ToString();
         }
 
         private void SaveHotkeySettings()
@@ -277,6 +300,15 @@ namespace Quanta.Core.Windows
                 else
                 {
                     registryKey.SetValue(addAlertKeyName, alertHotKey.ToString());
+                }
+
+                if (accomplishmentHotKey == Keys.None)
+                {
+                    registryKey.DeleteValue(addAccomplishmentKeyName, false);
+                }
+                else
+                {
+                    registryKey.SetValue(addAccomplishmentKeyName, accomplishmentHotKey.ToString());
                 }
 
                 // Save auto-display settings
@@ -516,6 +548,7 @@ namespace Quanta.Core.Windows
                 {
                     HotkeyManager.Current.Remove("ShowLog");
                     HotkeyManager.Current.Remove("ShowAddAlert");
+                    HotkeyManager.Current.Remove("ShowAddAccomplishment");
                 }
                 catch { }
             }
@@ -533,6 +566,12 @@ namespace Quanta.Core.Windows
             alertHotkeyTextBox.Text = "None";
         }
 
+        private void buttonResetAccomplishment_Click(object sender, EventArgs e)
+        {
+            accomplishmentHotKey = Keys.None;
+            accomplishmentHotkeyTextBox.Text = "None";
+        }
+
         private void alertHotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             // Capture the key combination
@@ -546,6 +585,23 @@ namespace Quanta.Core.Windows
         }
 
         private void alertHotkeyTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true; // Prevent normal text input
+        }
+
+        private void accomplishmentHotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Capture the key combination
+            if (e.KeyCode != Keys.None)
+            {
+                accomplishmentHotKey = e.KeyData;
+                accomplishmentHotkeyTextBox.Text = accomplishmentHotKey.ToString();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void accomplishmentHotkeyTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true; // Prevent normal text input
         }

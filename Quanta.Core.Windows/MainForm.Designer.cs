@@ -62,6 +62,9 @@ namespace Quanta.Core.Windows
             txtAutoDisplayMinute = new System.Windows.Forms.TextBox();
             chkAutoDisplayLog = new System.Windows.Forms.CheckBox();
             lblPingStatus = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            accomplishmentHotkeyTextBox = new System.Windows.Forms.TextBox();
+            buttonResetAccomplishment = new System.Windows.Forms.Button();
             iconContextMenu.SuspendLayout();
             SuspendLayout();
             // 
@@ -89,7 +92,7 @@ namespace Quanta.Core.Windows
             // button1
             // 
             button1.Font = new System.Drawing.Font("Segoe UI", 10F);
-            button1.Location = new System.Drawing.Point(148, 193);
+            button1.Location = new System.Drawing.Point(148, 247);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(75, 27);
             button1.TabIndex = 3;
@@ -239,7 +242,7 @@ namespace Quanta.Core.Windows
             // button2
             // 
             button2.Font = new System.Drawing.Font("Segoe UI", 10F);
-            button2.Location = new System.Drawing.Point(12, 120);
+            button2.Location = new System.Drawing.Point(12, 174);
             button2.Name = "button2";
             button2.Size = new System.Drawing.Size(75, 27);
             button2.TabIndex = 5;
@@ -284,46 +287,83 @@ namespace Quanta.Core.Windows
             // 
             lblPingResults.AutoSize = true;
             lblPingResults.Font = new System.Drawing.Font("Segoe UI", 10F);
-            lblPingResults.Location = new System.Drawing.Point(93, 125);
+            lblPingResults.Location = new System.Drawing.Point(93, 179);
             lblPingResults.Name = "lblPingResults";
             lblPingResults.Size = new System.Drawing.Size(46, 19);
             lblPingResults.TabIndex = 7;
             lblPingResults.Text = "Result";
-            // 
+            //
             // txtAutoDisplayMinute
-            // 
+            //
             txtAutoDisplayMinute.Font = new System.Drawing.Font("Segoe UI", 10F);
-            txtAutoDisplayMinute.Location = new System.Drawing.Point(163, 152);
+            txtAutoDisplayMinute.Location = new System.Drawing.Point(163, 206);
             txtAutoDisplayMinute.Name = "txtAutoDisplayMinute";
             txtAutoDisplayMinute.Size = new System.Drawing.Size(60, 25);
             txtAutoDisplayMinute.TabIndex = 17;
             txtAutoDisplayMinute.Text = "55";
-            // 
+            //
             // chkAutoDisplayLog
-            // 
+            //
             chkAutoDisplayLog.AutoSize = true;
             chkAutoDisplayLog.Font = new System.Drawing.Font("Segoe UI", 10F);
-            chkAutoDisplayLog.Location = new System.Drawing.Point(12, 153);
+            chkAutoDisplayLog.Location = new System.Drawing.Point(12, 207);
             chkAutoDisplayLog.Name = "chkAutoDisplayLog";
             chkAutoDisplayLog.Size = new System.Drawing.Size(154, 23);
             chkAutoDisplayLog.TabIndex = 15;
             chkAutoDisplayLog.Text = "Display log hourly at";
             chkAutoDisplayLog.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblPingStatus
-            // 
+            //
             lblPingStatus.AutoSize = true;
             lblPingStatus.Font = new System.Drawing.Font("Segoe UI", 12F);
-            lblPingStatus.Location = new System.Drawing.Point(12, 195);
+            lblPingStatus.Location = new System.Drawing.Point(12, 249);
             lblPingStatus.Name = "lblPingStatus";
             lblPingStatus.Size = new System.Drawing.Size(0, 21);
             lblPingStatus.TabIndex = 14;
-            // 
+            //
+            // label3
+            //
+            label3.AutoSize = true;
+            label3.Font = new System.Drawing.Font("Segoe UI", 10F);
+            label3.Location = new System.Drawing.Point(12, 119);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(206, 19);
+            label3.TabIndex = 18;
+            label3.Text = "Hotkey for add accomplishment";
+            label3.Click += label3_Click;
+            //
+            // accomplishmentHotkeyTextBox
+            //
+            accomplishmentHotkeyTextBox.Font = new System.Drawing.Font("Segoe UI", 10F);
+            accomplishmentHotkeyTextBox.Location = new System.Drawing.Point(12, 141);
+            accomplishmentHotkeyTextBox.Name = "accomplishmentHotkeyTextBox";
+            accomplishmentHotkeyTextBox.ReadOnly = true;
+            accomplishmentHotkeyTextBox.Size = new System.Drawing.Size(133, 25);
+            accomplishmentHotkeyTextBox.TabIndex = 19;
+            accomplishmentHotkeyTextBox.Text = "None";
+            accomplishmentHotkeyTextBox.KeyDown += accomplishmentHotkeyTextBox_KeyDown;
+            accomplishmentHotkeyTextBox.KeyPress += accomplishmentHotkeyTextBox_KeyPress;
+            //
+            // buttonResetAccomplishment
+            //
+            buttonResetAccomplishment.Font = new System.Drawing.Font("Segoe UI", 9F);
+            buttonResetAccomplishment.Location = new System.Drawing.Point(148, 140);
+            buttonResetAccomplishment.Name = "buttonResetAccomplishment";
+            buttonResetAccomplishment.Size = new System.Drawing.Size(53, 27);
+            buttonResetAccomplishment.TabIndex = 20;
+            buttonResetAccomplishment.Text = "Reset";
+            buttonResetAccomplishment.UseVisualStyleBackColor = true;
+            buttonResetAccomplishment.Click += buttonResetAccomplishment_Click;
+            //
             // MainForm
-            // 
+            //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(237, 228);
+            ClientSize = new System.Drawing.Size(237, 282);
+            Controls.Add(buttonResetAccomplishment);
+            Controls.Add(accomplishmentHotkeyTextBox);
+            Controls.Add(label3);
             Controls.Add(txtAutoDisplayMinute);
             Controls.Add(chkAutoDisplayLog);
             Controls.Add(lblPingStatus);
@@ -381,6 +421,9 @@ namespace Quanta.Core.Windows
         private System.Windows.Forms.TextBox txtAutoDisplayMinute;
         private System.Windows.Forms.CheckBox chkAutoDisplayLog;
         private System.Windows.Forms.Label lblPingStatus;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox accomplishmentHotkeyTextBox;
+        private System.Windows.Forms.Button buttonResetAccomplishment;
     }
 }
 
