@@ -1,6 +1,6 @@
 [
-  { "Id": 1231, "Name": "Set up project scaffolding", "SprintId": 1 },
-  { "Id": 2232, "Name": "Create login screen", "SprintId": 1 },
-  { "Id": 3334, "Name": "Implement user story grid view", "SprintId": 1 },
-  { "Id": 9398, "Name": "Add Description", "SprintId", 2 }
+  { "Id": 1231, "Name": "Set up project scaffolding", "SprintId": 1, "Description": "" },
+  { "Id": 2232, "Name": "Create login screen", "SprintId": 1, "Description": "" },
+  { "Id": 3334, "Name": "Implement user story grid view", "SprintId": 1, "Description": "" },
+  { "Id": 9398, "Name": "Add Description", "SprintId": 2, "Description": "" }
 ]

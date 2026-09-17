@@ -467,12 +467,12 @@ namespace Quanta.Core.Windows
                 .ToList();
 
             StringBuilder table = new StringBuilder();
-            table.AppendLine("| User Story ID | Sprint | Description |");
-            table.AppendLine("| --- | --- | --- |");
+            table.AppendLine("| User Story ID | Sprint | Name | Description |");
+            table.AppendLine("| --- | --- | --- | --- |");
 
             foreach (var userStory in userStories)
             {
-                table.AppendLine($"| {userStory.Id} | {EscapeMarkdownTableValue(userStory.SprintId)} | {EscapeMarkdownTableValue(userStory.Name)} |");
+                table.AppendLine($"| {userStory.Id} | {EscapeMarkdownTableValue(userStory.SprintId)} | {EscapeMarkdownTableValue(userStory.Name)} | {EscapeMarkdownTableValue(userStory.Description)} |");
             }
 
             return table.ToString().TrimEnd();

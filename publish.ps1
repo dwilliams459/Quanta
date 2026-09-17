@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $projectPath = Join-Path $PSScriptRoot 'Quanta.Core.Windows\Quanta.Core.Windows.csproj'
-$publishPath = 'C:\publish\quanta'
+$publishPath = 'C:\publish\quanta2'
 
 if (-not (Test-Path -LiteralPath $projectPath)) {
     throw "Project file not found: $projectPath"
